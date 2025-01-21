@@ -1,0 +1,40 @@
+#overlay {
+    position: fixed;
+    top: 64px;
+    right: 12px;
+    width: 400px;
+    height: 850px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 8px;
+    z-index: 9999;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    overflow: auto;
+}
+
+#overlay * {
+    pointer-events: auto;
+}
+
+body #overlay {
+    pointer-events: auto;
+}
+
+table {
+    display: table;
+    border-collapse: collapse;
+}
+
+tr {
+    border-top:    1px solid #DDD;
+    border-bottom: 1px solid #DDD;
+}
+
+table table td:first-child {
+    border-right: 1px solid #DDD;
+}
+
+.SessionLayout_wrapper_open__6mmLw .SessionLayout_main__7VioL {
+    margin-left: -100px !important;
+}

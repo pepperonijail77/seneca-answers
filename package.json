@@ -1,0 +1,20 @@
+{
+  "name": "seneca-answers",
+  "version": "1.0.0",
+  "description": "Seneca Answers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 1"
+  },
+  "private": true,
+  "keywords": [
+    "Seneca",
+    "extension",
+    "answers",
+    "SenecaLearning",
+    "cheat",
+    "senecalearning.com"
+  ],
+  "author": "pepperonijail77",
+  "license": "GPL-3.0-or-later"
+}

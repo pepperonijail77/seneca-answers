@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+  "name": "Seneca Answers",
+  "version": "0.1",
+  "description": "Get answers for SenecaLearning",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "https://ellsies.tech/",
+    "https://senecalearning.com/"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://app.senecalearning.com/*"],
+      "css": ["overlay.css"],
+      "js": ["content.js"]
+    }
+  ]
+}
