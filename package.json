@@ -2,7 +2,7 @@
   "name": "seneca-answers",
   "version": "1.0.0",
   "description": "Seneca Answers",
-  "main": "index.js",
+  "main": "manifest.json",
   "scripts": {
     "test": "echo \"No test specified\" && exit 1"
   },

@@ -35,6 +35,10 @@ table table td:first-child {
     border-right: 1px solid #DDD;
 }
 
+#overlay img {
+    width: 383px;
+}
+
 .SessionLayout_wrapper_open__6mmLw .SessionLayout_main__7VioL {
     margin-left: -100px !important;
 }
