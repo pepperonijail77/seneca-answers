@@ -1,3 +1,4 @@
+const brow = typeof browser === 'undefined' ? window.chrome : browser;
 const overlay = document.body.appendChild(document.createElement('div'));
 overlay.id = 'overlay';
 overlay.innerHTML = `
@@ -10,17 +11,17 @@ overlay.innerHTML = `
         </div>
     </div>
 `;
+const result = document.getElementById('result');
 
 document.getElementById('close').addEventListener('click', () => {
     document.getElementById('overlay').hidden = true;
 });
 
 document.getElementById('button').addEventListener('click', async () => {
-    const result = document.getElementById('result');
-    result.innerText = '';
+    result.innerHTML = '';
     const url = document.location.href.split('/');
 
-    const senecaUrl = await browser.runtime.sendMessage({type: 'signedUrl', course: url[5], section: url[7]}).then(r => {
+    const senecaUrl = await brow.runtime.sendMessage({type: 'signedUrl', course: url[5], section: url[7]}).then(r => {
         if (r.success) return r.data;
         else {
             result.textContent = 'Error getting signed url: ' + JSON.stringify(r);
@@ -29,7 +30,7 @@ document.getElementById('button').addEventListener('click', async () => {
     }).catch(e => console.error(e));
     if (senecaUrl === 'failed' || senecaUrl === undefined) return;
 
-    const seneca = await browser.runtime.sendMessage({type: 'seneca', url: senecaUrl}).then(r => {
+    const seneca = await brow.runtime.sendMessage({type: 'seneca', url: senecaUrl}).then(r => {
         if (r.success) return r.data;
         else {
             result.textContent = 'Error getting seneca data: ' + r.error;
