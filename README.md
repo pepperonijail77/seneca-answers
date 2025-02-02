@@ -12,13 +12,14 @@ Get `seneca-answers.xpi` from the latest [release](https://github.com/pepperonij
 Go to `about:debugging#/runtime/this-firefox`, and press `Load Temporary Add-on...`, then select the `seneca-answers.xpi` file that you downloaded.
 
 </details>
-<br>
 <details>
 <summary>Chrome</summary>
 
 Get `seneca-answers.crx` from the latest [release](https://github.com/pepperonijail77/seneca-answers/releases/latest).
 
-Drag `seneca-answers.crx` that you downloaded onto the browser window, and press `Add Extension`.
+Go to `chrome://extensions`, and make sure Developer mode is enabled.
+
+Drag and drop `seneca-answers.crx` that you downloaded onto the page, and press `Add Extension`.
 
 </details>
 
