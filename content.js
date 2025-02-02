@@ -50,6 +50,7 @@ document.getElementById('button').addEventListener('click', async () => {
         const row = result.appendChild(document.createElement('tr'));
         switch (answer.moduleType) {
             case 'concept':
+            case 'delve':
             case 'pattern':
             case 'hierarchy':
             case 'image':
