@@ -3,7 +3,7 @@ const overlay = document.body.appendChild(document.createElement('div'));
 overlay.id = 'overlay';
 overlay.innerHTML = `
     <div id="overlay-content">
-        <button id="button">Get Answers</button>
+        <button id="button">Get answers</button>
         <button id="close">X</button>
         <div>
             <table id="result">
@@ -18,7 +18,7 @@ document.getElementById('close').addEventListener('click', () => {
 });
 
 document.getElementById('button').addEventListener('click', async () => {
-    result.innerHTML = '';
+    result.innerHTML = 'Loading...';
     const url = document.location.href.split('/');
 
     const senecaUrl = await brow.runtime.sendMessage({type: 'signedUrl', course: url[5], section: url[7]}).then(r => {
@@ -46,6 +46,7 @@ document.getElementById('button').addEventListener('click', async () => {
         }
     }
 
+    result.innerHTML = '';
     for (let answer of answers) {
         const row = result.appendChild(document.createElement('tr'));
         switch (answer.moduleType) {
