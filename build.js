@@ -1,4 +1,4 @@
-import { mkdir, copyFile , createWriteStream, readFileSync, writeFile, rm } from 'node:fs'
+import { mkdir, copyFileSync , createWriteStream, readFileSync, writeFile, rm } from 'node:fs'
 import archiver from 'archiver'
 import ChromeExtension from 'crx'
 
@@ -47,10 +47,15 @@ async function chrome() {
     mkdir('tmp', {recursive: true}, err);
     mkdir('tmp/icons', {recursive: true}, err);
 
-    await copyFile('manifest.v3.json', 'tmp/manifest.json', err);
-    ['background.js', 'content.js', 'overlay.css', 'icons/icon-192.png'].forEach(file => {
-        copyFile(file, 'tmp/' + file, err);
-    });
+    try {
+        copyFileSync('manifest.v3.json', 'tmp/manifest.json');
+        ['background.js', 'content.js', 'overlay.css', 'icons/icon-192.png'].forEach(file => {
+            copyFileSync(file, 'tmp/' + file);
+        });
+    } catch (err) {
+        rm('tmp', {recursive: true}, err);
+        throw err;
+    }
 
     await crx.load('tmp')
         .then(crx => crx.pack())
