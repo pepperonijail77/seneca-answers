@@ -1,3 +1,5 @@
+const browser = self.browser || self.chrome;
+
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'signedUrl') {
         fetch('https://seneca.ellsies.tech/api/courses/' + message.course + '/signed-url?sectionId=' + message.section)

@@ -2,7 +2,8 @@
   "name": "seneca-answers",
   "version": "1.0.0",
   "description": "Seneca Answers",
-  "main": "manifest.json",
+  "main": "content.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"No test specified\" && exit 1"
   },
@@ -16,5 +17,9 @@
     "senecalearning.com"
   ],
   "author": "pepperonijail77",
-  "license": "GPL-3.0-or-later"
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "crx": "^5.0.1"
+  }
 }
