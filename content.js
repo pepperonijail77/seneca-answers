@@ -52,6 +52,7 @@ document.getElementById('button').addEventListener('click', async () => {
         switch (answer.moduleType) {
             case 'concept':
             case 'delve':
+            case 'flashcard':
             case 'pattern':
             case 'hierarchy':
             case 'image':
@@ -70,7 +71,7 @@ document.getElementById('button').addEventListener('click', async () => {
                     }
                     sentences.push(sentence.join(''));
                 }
-                row.innerHTML = `<h3>${answer.moduleType === 'list' ? 'List' : (answer.moduleType === 'exact-list' ? 'Exact List' : 'Mind map')}</h3><b>${answer.content.statement}</b><p>${sentences.join('</p><p>')}</p>`;
+                row.innerHTML = `<h3>${answer.moduleType === 'list' ? 'List' : (answer.moduleType === 'exact-list' ? 'Exact List' : 'Mind map')}</h3><p><strong>${answer.content.statement}</strong></p><p>${sentences.join('<br><br>')}</p>`;
                 break;
             } case 'flow': {
                 row.innerHTML = `<h3>Flow</h3><p>${answer.content.title}</p>`; // <p>${answer.content.orderedValues.join('<br>')}</p>`;
@@ -93,21 +94,45 @@ document.getElementById('button').addEventListener('click', async () => {
                 break;
             } case 'image-description':
             case 'wordfill': {
-                let sentence = [];
-                for (let i of answer.content.words) {
-                    if (typeof i === 'string') sentence.push(i);
-                    else if (typeof i === 'object') sentence.push(`<u>${i.word.split('__')[1] || i.word}</u>`);
+                const sentence = [];
+                for (let word of answer.content.words) {
+                    if (typeof word === 'string') sentence.push(word);
+                    else if (typeof word === 'object') sentence.push(`<u>${word.word.split('__')[1] || word.word}</u>`);
                 }
                 row.innerHTML = `<h3>${answer.moduleType === 'wordfill' ? 'Wordfill' : 'Image Description'}</h3><p>${sentence.join('')}</p>`;
                 break;
-            } case 'image-multi-choice': {
+            } case 'image-label': {
+                const labels = [];
+                for (let label of answer.content.labels) {
+                    if (label.word.isMixedDefinition) labels.push(label.word.processedWord[0].caps);
+                    else labels.push(label.word.caps)
+                }
+                row.innerHTML = `<h3>Image Label</h3><p>${answer.content.title}</p><p>${labels.join('<br>')}</p>`;
+                break;
+            } case 'image-list': {
+                const images = [];
+                const values = [];
+                for (let value of answer.content.values) {
+                    images.push(`<img src="https://image-v2.cdn.app.senecalearning.com/${value.imgURL.split('///')[1]}" alt="${value.imgURL.split('/').at(-1)}">`);
+                    values.push(value.value[0].caps);
+                }
+                row.innerHTML = `<h3>Image List</h3>`;
+                const details = row.appendChild(document.createElement('details'));
+                details.innerHTML = `<summary>${answer.content.statement}</summary>`
+                for (let i = 0; i < images.length; i++) {
+                    const span = details.appendChild(document.createElement('span'));
+                    span.innerHTML= images[i] + values[i] + '<br><br>';
+                }
+                break;
+            }
+            case 'image-multi-choice': {
                 const imageUrls = [];
-                for (let i of answer.content.values) {
-                    if (i.isCorrect) imageUrls.push(i.image);
+                for (let value of answer.content.values) {
+                    if (value.isCorrect) imageUrls.push(value.image);
                 }
                 const images = [];
-                for (let i of imageUrls) {
-                    images.push(`<img src="https://image-v2.cdn.app.senecalearning.com/${i.split('///')[1]}" alt="${i.split('/')[5]}">`);
+                for (let url of imageUrls) {
+                    images.push(`<img src="https://image-v2.cdn.app.senecalearning.com/${url.split('///')[1]}" alt="${url.split('/').at(-1)}">`);
                 }
                 row.innerHTML = `<h3>Image Multiple Choice</h3><p>${answer.content.title}</p><p>${images.join('')}</p>`;
                 break;
@@ -116,8 +141,8 @@ document.getElementById('button').addEventListener('click', async () => {
                 break;
             } case 'multiSelect': {
                 const correct = [];
-                for (let i of answer.content.options) {
-                    if (i.correct === true) correct.push(i.text);
+                for (let option of answer.content.options) {
+                    if (option.correct === true) correct.push(option.text);
                 }
                 row.innerHTML = `<h3>Multi Select</h3><p>${answer.content.question}</p><p>${correct.join('<br>')}</p>`
                 break;
