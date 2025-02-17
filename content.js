@@ -3,7 +3,8 @@ const overlay = document.body.appendChild(document.createElement('div'));
 overlay.id = 'overlay';
 overlay.innerHTML = `
     <div id="overlay-content">
-        <button id="button">Get answers</button>
+        <button id="get-answers">Get answers</button>
+        <button id="move">Move</button>
         <button id="close">X</button>
         <div>
             <table id="result">
@@ -17,7 +18,40 @@ document.getElementById('close').addEventListener('click', () => {
     document.getElementById('overlay').hidden = true;
 });
 
-document.getElementById('button').addEventListener('click', async () => {
+(function(elt, move) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    move.onmousedown = dragMouseDown;
+
+    function dragMouseDown(e) {
+        move.style.cursor = 'grabbing';
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        console.log(pos1, pos2);
+        elt.style.top = (elt.offsetTop - pos2) + "px";
+        elt.style.right = (document.body.offsetWidth - elt.offsetWidth - elt.offsetLeft + pos1) + "px";
+    }
+
+    function closeDragElement() {
+        move.style.cursor = 'grab';
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+})(document.getElementById('overlay'), document.getElementById('move'));
+
+document.getElementById('get-answers').addEventListener('click', async () => {
     result.innerHTML = 'Loading...';
     const url = document.location.href.split('/');
 
@@ -84,7 +118,7 @@ document.getElementById('button').addEventListener('click', async () => {
                     let sentence = [];
                     for (let word of i.word) {
                         if (typeof word === 'string') sentence.push(word);
-                        else if (typeof word === 'object') sentence.push(word.caps);
+                        else if (typeof word === 'object') sentence.push(word.caps || word.word);
                     }
                     grid.push(`<tr><td>${sentence.join('')}</td><td>${i.text}</td></tr>`);
                 }
