@@ -2,7 +2,7 @@
     position: fixed;
     top: 64px;
     right: 12px;
-    width: 400px;
+    width: 21%;
     height: 850px;
     background-color: var(--foreground);
     border: 1px solid var(--neutral-xLow-content);
@@ -13,6 +13,14 @@
     overflow: auto;
     color: var(--neutral-high-content);
     font-family: Seneca, sans-serif;
+    min-width: 316px;
+    min-height: 60px;
+    resize: both;
+    direction: rtl;
+}
+
+#overlay-content {
+    direction: ltr;
 }
 
 #overlay * {
@@ -45,7 +53,7 @@ body #overlay {
     font-size: 20px;
 }
 
-#button {
+#get-answers {
     padding: 12px 24px;
     border-radius: 4px;
     border-width: 0;
@@ -57,7 +65,7 @@ body #overlay {
     cursor: pointer;
 }
 
-#button:hover {
+#get-answers:hover {
     background-color: rgb(64, 154, 255);
 }
 
@@ -76,6 +84,19 @@ body #overlay {
 
 #close:hover {
     background-color: rgba(116, 173, 255, 0.08);
+}
+
+#move {
+    padding: 12px 24px;
+    border-radius: 4px;
+    border-width: 0;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 140%;
+    background-color: transparent;
+    color: rgb(116, 173, 255);
+    cursor: grab;
+    box-shadow: 0 0 0 2px inset;
 }
 
 
