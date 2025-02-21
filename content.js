@@ -148,11 +148,15 @@ document.getElementById('get-answers').addEventListener('click', async () => {
                 const values = [];
                 for (let value of answer.content.values) {
                     images.push(`<img src="https://image-v2.cdn.app.senecalearning.com/${value.imgURL.split('///')[1]}" alt="${value.imgURL.split('/').at(-1)}">`);
-                    values.push(value.value[0].caps);
+                    values.push('');
+                    for (let val of value.value) {
+                        if (typeof val === 'string') values[values.length - 1] += val;
+                        else if (typeof val === 'object') values[values.length - 1] += val.word;
+                    }
                 }
                 row.innerHTML = `<h3>Image List</h3>`;
                 const details = row.appendChild(document.createElement('details'));
-                details.innerHTML = `<summary>${answer.content.statement}</summary>`
+                details.innerHTML = `<summary>${answer.content.statement || seneca.title}</summary>`
                 for (let i = 0; i < images.length; i++) {
                     const span = details.appendChild(document.createElement('span'));
                     span.innerHTML= images[i] + values[i] + '<br><br>';
