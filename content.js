@@ -87,9 +87,10 @@ document.getElementById('get-answers').addEventListener('click', async () => {
             case 'concept':
             case 'delve':
             case 'flashcard':
-            case 'pattern':
             case 'hierarchy':
             case 'image':
+            case 'pattern':
+            case 'text-block':
             case 'video': {
                 row.remove();
                 break;
