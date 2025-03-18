@@ -58,7 +58,7 @@ document.getElementById('get-answers').addEventListener('click', async () => {
     const senecaUrl = await brow.runtime.sendMessage({type: 'signedUrl', course: url[5], section: url[7]}).then(r => {
         if (r.success) return r.data;
         else {
-            result.textContent = 'Error getting signed url: ' + JSON.stringify(r);
+            result.textContent = 'Error getting signed url: ' + r.error;
             return 'failed';
         }
     }).catch(e => console.error(e));
