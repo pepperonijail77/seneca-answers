@@ -95,6 +95,9 @@ document.getElementById('get-answers').addEventListener('click', async () => {
             case 'video': {
                 row.remove();
                 break;
+            } case 'equation': {
+                row.innerHTML = `<h3>Equation</h3><p>${answer.content.wordfillSentence}</p>`;
+                break;
             } case 'exact-list':
             case 'list':
             case 'mindmap': {
