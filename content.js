@@ -186,6 +186,9 @@ document.getElementById('get-answers').addEventListener('click', async () => {
                 }
                 row.innerHTML = `<h3>Multi Select</h3><p>${answer.content.question}</p><p>${correct.join('<br>')}</p>`
                 break;
+            } case 'simple-calculation': {
+                row.innerHTML = `<h3>Simple Calculation</h3><p>${answer.content.answersTemplate}</p>`
+                break;
             } case 'toggles': {
                 const toggles = [];
                 for (let i of answer.content.toggles) {
