@@ -35,3 +35,6 @@ jspm_packages/
 
 # Private Key
 key.pem
+
+# JetBrains IDE
+.idea/

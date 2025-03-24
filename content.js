@@ -88,6 +88,7 @@ document.getElementById('get-answers').addEventListener('click', async () => {
             case 'delve':
             case 'flashcard':
             case 'hierarchy':
+            case 'hyper-flashcard':
             case 'image':
             case 'pattern':
             case 'text-block':
