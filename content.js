@@ -95,6 +95,9 @@ document.getElementById('get-answers').addEventListener('click', async () => {
             case 'video': {
                 row.remove();
                 break;
+            } case 'equation': {
+                row.innerHTML = `<h3>Equation</h3><p>${answer.content.wordfillSentence}</p>`;
+                break;
             } case 'exact-list':
             case 'list':
             case 'mindmap': {
@@ -185,6 +188,9 @@ document.getElementById('get-answers').addEventListener('click', async () => {
                     if (option.correct === true) correct.push(option.text);
                 }
                 row.innerHTML = `<h3>Multi Select</h3><p>${answer.content.question}</p><p>${correct.join('<br>')}</p>`
+                break;
+            } case 'simple-calculation': {
+                row.innerHTML = `<h3>Simple Calculation</h3><p>${answer.content.answersTemplate}</p>`
                 break;
             } case 'toggles': {
                 const toggles = [];
