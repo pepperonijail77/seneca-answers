@@ -37,7 +37,7 @@ Drag and drop `seneca-answers.crx` that you downloaded onto the page, and press 
 
 ## Usage
 
-Simply go onto a lesson on [Seneca](https://app.senecalearning.com/), and you will see a pop-up on the right. Press `Get Answers` to get answers, and `X` to hide the pop-up.
+Simply go onto a lesson on [Seneca](https://app.senecalearning.com/), and you will see a pop-up on the right. Press `Get Answers` to get answers, drag `Move` to move the pop-up, and press `X` to hide the pop-up.
 
 ## Build
 
