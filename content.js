@@ -6,6 +6,7 @@ overlay.innerHTML = `
         <button id="get-answers">Get answers</button>
         <button id="move">Move</button>
         <button id="close">X</button>
+        <input type="text" placeholder="https://course-cdn-v2.app.senecalearning.com/api/courses/.../sections/..." id="url-input">
         <div>
             <table id="result">
             </table>
@@ -53,16 +54,17 @@ document.getElementById('close').addEventListener('click', () => {
 
 document.getElementById('get-answers').addEventListener('click', async () => {
     result.innerHTML = 'Loading...';
-    const url = document.location.href.split('/');
+    // const url = document.location.href.split('/');
 
-    const senecaUrl = await brow.runtime.sendMessage({type: 'signedUrl', course: url[5], section: url[7]}).then(r => {
-        if (r.success) return r.data;
-        else {
-            result.textContent = 'Error getting signed url: ' + r.error;
-            return 'failed';
-        }
-    }).catch(e => console.error(e));
-    if (senecaUrl === 'failed' || senecaUrl === undefined) return;
+    // const senecaUrl = await brow.runtime.sendMessage({type: 'signedUrl', course: url[5], section: url[7]}).then(r => {
+    //     if (r.success) return r.data;
+    //     else {
+    //         result.textContent = 'Error getting signed url: ' + r.error;
+    //         return 'failed';
+    //     }
+    // }).catch(e => console.error(e));
+    // if (senecaUrl === 'failed' || senecaUrl === undefined) return;
+    const senecaUrl = document.getElementById('url-input').value;
 
     const seneca = await brow.runtime.sendMessage({type: 'seneca', url: senecaUrl}).then(r => {
         if (r.success) return r.data;
