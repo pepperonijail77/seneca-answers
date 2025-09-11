@@ -99,6 +99,33 @@ body #overlay {
     box-shadow: 0 0 0 2px inset;
 }
 
+#url-input {
+    border: 1px solid var(--neutral-low-content);
+    border-radius: 5px;
+    height: 45px;
+    min-width: 280px;
+    padding: 0 8px 0 15px;
+    box-sizing: border-box;
+    outline: none;
+    font-style: italic;
+    transition: all .35s ease;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-family: Seneca;
+    line-height: 1.5;
+    letter-spacing: .2px;
+    font-size: 16px;
+    color: var(--neutral-high-content);
+    background: var(--foreground);
+    color: var(--neutral-medium-content)
+}
+
+#url-input:focus {
+    border: 1px solid var(--primary-high-surface);
+    color: var(--neutral-high-content);
+    box-shadow: 0 0 8px rgb(from var(--primary-high-surface) r g b / .1)
+}
+
 
 .SessionLayout_wrapper_open__6mmLw .SessionLayout_main__7VioL {
     margin-left: -100px !important;
