@@ -4,10 +4,8 @@
   "version": "2.0.0",
   "description": "Web extension to get the answers to SenecaLearning lessons",
   "permissions": [
-    "activeTab",
-    "tabs",
-    "https://ellsies.tech/",
-    "https://senecalearning.com/"
+    "webRequest",
+    "https://*.senecalearning.com/*"
   ],
   "background": {
     "scripts": ["background.js"]

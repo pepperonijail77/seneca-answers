@@ -53,22 +53,6 @@ body #overlay {
     font-size: 20px;
 }
 
-#get-answers {
-    padding: 12px 24px;
-    border-radius: 4px;
-    border-width: 0;
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 140%;
-    background-color: rgb(47, 145, 255);
-    color: var(--contentOn-primary-high-surface);
-    cursor: pointer;
-}
-
-#get-answers:hover {
-    background-color: rgb(64, 154, 255);
-}
-
 #close {
     padding: 12px 24px;
     border-radius: 4px;
@@ -97,33 +81,6 @@ body #overlay {
     color: rgb(116, 173, 255);
     cursor: grab;
     box-shadow: 0 0 0 2px inset;
-}
-
-#url-input {
-    border: 1px solid var(--neutral-low-content);
-    border-radius: 5px;
-    height: 45px;
-    min-width: 280px;
-    padding: 0 8px 0 15px;
-    box-sizing: border-box;
-    outline: none;
-    font-style: italic;
-    transition: all .35s ease;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    font-family: Seneca;
-    line-height: 1.5;
-    letter-spacing: .2px;
-    font-size: 16px;
-    color: var(--neutral-high-content);
-    background: var(--foreground);
-    color: var(--neutral-medium-content)
-}
-
-#url-input:focus {
-    border: 1px solid var(--primary-high-surface);
-    color: var(--neutral-high-content);
-    box-shadow: 0 0 8px rgb(from var(--primary-high-surface) r g b / .1)
 }
 
 
