@@ -1,9 +1,9 @@
 const brow = typeof browser === 'undefined' ? window.chrome : browser;
+
 const overlay = document.body.appendChild(document.createElement('div'));
 overlay.id = 'overlay';
 overlay.innerHTML = `
     <div id="overlay-content">
-        <button id="get-answers">Get answers</button>
         <button id="move">Move</button>
         <button id="close">X</button>
         <div>
@@ -14,10 +14,12 @@ overlay.innerHTML = `
 `;
 const result = document.getElementById('result');
 
+// Close
 document.getElementById('close').addEventListener('click', () => {
     document.getElementById('overlay').hidden = true;
 });
 
+// Move
 (function(elt, move) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     move.onmousedown = dragMouseDown;
@@ -51,27 +53,18 @@ document.getElementById('close').addEventListener('click', () => {
     }
 })(document.getElementById('overlay'), document.getElementById('move'));
 
-document.getElementById('get-answers').addEventListener('click', async () => {
+brow.runtime.onMessage.addListener((message) => {
+    fetch(message.url)
+        .then(r => r.json())
+        .then(d => {
+            updateAnswers(d);
+            console.log(d);
+        })
+        .catch(e => console.error(e));
+});
+
+function updateAnswers(seneca) {
     result.innerHTML = 'Loading...';
-    const url = document.location.href.split('/');
-
-    const senecaUrl = await brow.runtime.sendMessage({type: 'signedUrl', course: url[5], section: url[7]}).then(r => {
-        if (r.success) return r.data;
-        else {
-            result.textContent = 'Error getting signed url: ' + r.error;
-            return 'failed';
-        }
-    }).catch(e => console.error(e));
-    if (senecaUrl === 'failed' || senecaUrl === undefined) return;
-
-    const seneca = await brow.runtime.sendMessage({type: 'seneca', url: senecaUrl}).then(r => {
-        if (r.success) return r.data;
-        else {
-            result.textContent = 'Error getting seneca data: ' + r.error;
-            return 'failed';
-        }
-    }).catch(e => console.error(e));
-    if (seneca === 'failed' || seneca === undefined) return;
 
     const answers = [];
     for (let content of seneca.contents) {
@@ -217,8 +210,8 @@ document.getElementById('get-answers').addEventListener('click', async () => {
                 row.innerHTML = `<h3>Wrong Word</h3><p>${sentence.join('')}</p>`;
                 break;
             } default: {
-                row.innerHTML = `<h3>${answer.moduleType}</h3>`;
+                row.innerHTML = `<h3>${answer.moduleType}</h3><p>${JSON.stringify(answer)}</p>`;
             }
         }
     }
-});
+}
