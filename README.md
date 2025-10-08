@@ -1,5 +1,3 @@
-> THIS PROJECT IS NO LONGER FUNCTIONAL
-
 ![Icon](icons/icon-192.png)
 
 # Seneca Answers
