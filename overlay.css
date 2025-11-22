@@ -53,6 +53,22 @@ body #overlay {
 	font-size: 20px;
 }
 
+#get-answers {
+	padding: 12px 24px;
+	border-radius: 4px;
+	border-width: 0;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 140%;
+	background-color: rgb(47, 145, 255);
+	color: var(--contentOn-primary-high-surface);
+	cursor: pointer;
+}
+
+#get-answers:hover {
+	background-color: rgb(64, 154, 255);
+}
+
 #close {
 	padding: 12px 24px;
 	border-radius: 4px;

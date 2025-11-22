@@ -4,6 +4,7 @@ const overlay = document.body.appendChild(document.createElement('div'));
 overlay.id = 'overlay';
 overlay.innerHTML = `
 	<div id="overlay-content">
+		<button id="get-answers">Get answers</button>
 		<button id="move">Move</button>
 		<button id="close">X</button>
 		<div>
@@ -13,10 +14,19 @@ overlay.innerHTML = `
 	</div>
 `;
 const result = document.getElementById('result');
+const signedUrls = {};
 
-// Close
-document.getElementById('close').addEventListener('click', () => {
-	document.getElementById('overlay').hidden = true;
+document.getElementById('get-answers').addEventListener('click', () => {
+	const url = window.location.href.split('/');
+	if (signedUrls[url[7]]) {
+		fetch(signedUrls[url[7]])
+			.then(r => r.json())
+			.then(d => {
+				updateAnswers(d);
+				console.log(d);
+			})
+			.catch(e => console.error(e));
+	}
 });
 
 // Move
@@ -61,10 +71,16 @@ document.getElementById('close').addEventListener('click', () => {
 	}
 })(document.getElementById('overlay'), document.getElementById('move'));
 
+// Close
+document.getElementById('close').addEventListener('click', () => {
+	document.getElementById('overlay').hidden = true;
+});
+
 brow.runtime.onMessage.addListener(message => {
 	fetch(message.url)
 		.then(r => r.json())
 		.then(d => {
+			signedUrls[d.id] = message.url;
 			updateAnswers(d);
 			console.log(d);
 		})
