@@ -61,11 +61,13 @@ Simply go onto a lesson on [Seneca](https://app.senecalearning.com/), and you wi
 - [node.js](https://nodejs.org/)
 
 Clone the repo.
+
 ```sh
 git clone https://github.com/pepperonijail77/seneca-answers.git
 ```
 
 In the root directory install all the npm dependencies.
+
 ```sh
 npm install
 ```
@@ -75,16 +77,19 @@ npm install
 In the root directory run build.js with node.js.
 
 Firefox:
+
 ```sh
 node build.js firefox
 ```
 
 Chromium:
+
 ```sh
 node build.js chrome
 ```
 
 Both:
+
 ```sh
 node build.js
 ```
@@ -92,4 +97,5 @@ node build.js
 The built files will be in `/dist`.
 
 ## License
+
 This product is licensed under the [GNU GPL v3](https://choosealicense.com/licenses/gpl-3.0) License.
