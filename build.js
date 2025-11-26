@@ -4,7 +4,7 @@ import {
 	createWriteStream,
 	readFileSync,
 	writeFile,
-	rm
+	rm,
 } from 'node:fs';
 import archiver from 'archiver';
 import ChromeExtension from 'crx';
@@ -13,12 +13,12 @@ const err = e => {
 	if (e) throw e;
 };
 
-mkdir('dist', { recursive: true }, err);
+mkdir('dist', {recursive: true}, err);
 
 function firefox() {
 	const output = createWriteStream('dist/seneca-answers.xpi');
 	const archive = archiver('zip', {
-		zlib: { level: 9 }
+		zlib: {level: 9},
 	});
 
 	output.on('close', () => {
@@ -36,10 +36,10 @@ function firefox() {
 
 	archive.pipe(output);
 
-	archive.file('manifest.v2.json', { name: 'manifest.json' });
+	archive.file('manifest.v2.json', {name: 'manifest.json'});
 	archive.directory('icons/', 'icons');
 	['background.js', 'content.js', 'overlay.css'].forEach(file => {
-		archive.file(file, { name: file });
+		archive.file(file, {name: file});
 	});
 
 	archive.finalize();
@@ -48,11 +48,11 @@ function firefox() {
 async function chrome() {
 	const crx = new ChromeExtension({
 		codebase: 'dist/seneca-answers.crx',
-		privateKey: readFileSync('key.pem', err)
+		privateKey: readFileSync('key.pem', err),
 	});
 
-	mkdir('tmp', { recursive: true }, err);
-	mkdir('tmp/icons', { recursive: true }, err);
+	mkdir('tmp', {recursive: true}, err);
+	mkdir('tmp/icons', {recursive: true}, err);
 
 	try {
 		copyFileSync('manifest.v3.json', 'tmp/manifest.json');
@@ -60,12 +60,12 @@ async function chrome() {
 			'background.js',
 			'content.js',
 			'overlay.css',
-			'icons/icon-192.png'
+			'icons/icon-192.png',
 		].forEach(file => {
 			copyFileSync(file, 'tmp/' + file);
 		});
 	} catch (err) {
-		rm('tmp', { recursive: true }, err);
+		rm('tmp', {recursive: true}, err);
 		throw err;
 	}
 
@@ -75,7 +75,7 @@ async function chrome() {
 		.then(crxBuffer => writeFile('dist/seneca-answers.crx', crxBuffer, err))
 		.catch(err);
 
-	rm('tmp', { recursive: true }, err);
+	rm('tmp', {recursive: true}, err);
 
 	console.log('Built for Chrome.');
 }
