@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Seneca Answers",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Web extension to get the answers to SenecaLearning lessons",
 	"permissions": ["webRequest"],
 	"host_permissions": ["https://*.senecalearning.com/*"],
