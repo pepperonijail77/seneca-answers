@@ -38,3 +38,6 @@ key.pem
 
 # JetBrains IDE
 .idea/
+
+# Builds
+dist/

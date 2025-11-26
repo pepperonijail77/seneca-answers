@@ -1,97 +1,113 @@
 #overlay {
-    position: fixed;
-    top: 64px;
-    right: 12px;
-    width: 21%;
-    height: 850px;
-    background-color: var(--foreground);
-    border: 1px solid var(--neutral-xLow-content);
-    border-radius: 8px;
-    z-index: 9999;
-    box-shadow: none;
-    padding: 10px;
-    overflow: auto;
-    color: var(--neutral-high-content);
-    font-family: Seneca, sans-serif;
-    min-width: 316px;
-    min-height: 60px;
-    resize: both;
-    direction: rtl;
+	position: fixed;
+	top: 64px;
+	right: 12px;
+	width: 21%;
+	height: 850px;
+	background-color: var(--foreground);
+	border: 1px solid var(--neutral-xLow-content);
+	border-radius: 8px;
+	z-index: 9999;
+	box-shadow: none;
+	padding: 10px;
+	overflow: auto;
+	color: var(--neutral-high-content);
+	font-family: Seneca, sans-serif;
+	min-width: 316px;
+	min-height: 60px;
+	resize: both;
+	direction: rtl;
 }
 
 #overlay-content {
-    direction: ltr;
+	direction: ltr;
 }
 
 #overlay * {
-    pointer-events: auto;
+	pointer-events: auto;
 }
 
 body #overlay {
-    pointer-events: auto;
+	pointer-events: auto;
 }
 
 #overlay table {
-    display: table;
-    border-collapse: collapse;
+	display: table;
+	border-collapse: collapse;
 }
 
 #overlay tr {
-    /*border-top: 1px solid var(--neutral-xLow-content);*/
-    border-bottom: 1px solid var(--neutral-xLow-content);
+	/*border-top: 1px solid var(--neutral-xLow-content);*/
+	border-bottom: 1px solid var(--neutral-xLow-content);
 }
 
 #overlay table table td:first-child {
-    border-right: 1px solid var(--neutral-xLow-content);
+	border-right: 1px solid var(--neutral-xLow-content);
 }
 
 #overlay img {
-    width: 383px;
+	width: 383px;
 }
 
 #overlay h3 {
-    font-size: 20px;
+	font-size: 20px;
+}
+
+#get-answers {
+	padding: 12px 24px;
+	border-radius: 4px;
+	border-width: 0;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 140%;
+	background-color: rgb(47, 145, 255);
+	color: var(--contentOn-primary-high-surface);
+	cursor: pointer;
+}
+
+#get-answers:hover {
+	background-color: rgb(64, 154, 255);
 }
 
 #close {
-    padding: 12px 24px;
-    border-radius: 4px;
-    border-width: 0;
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 140%;
-    background-color: transparent;
-    color: rgb(116, 173, 255);
-    cursor: pointer;
-    box-shadow: 0 0 0 2px inset;
+	padding: 12px 24px;
+	border-radius: 4px;
+	border-width: 0;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 140%;
+	background-color: transparent;
+	color: rgb(116, 173, 255);
+	cursor: pointer;
+	box-shadow: 0 0 0 2px inset;
 }
 
 #close:hover {
-    background-color: rgba(116, 173, 255, 0.08);
+	background-color: rgba(116, 173, 255, 0.08);
 }
 
 #move {
-    padding: 12px 24px;
-    border-radius: 4px;
-    border-width: 0;
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 140%;
-    background-color: transparent;
-    color: rgb(116, 173, 255);
-    cursor: grab;
-    box-shadow: 0 0 0 2px inset;
+	padding: 12px 24px;
+	border-radius: 4px;
+	border-width: 0;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 140%;
+	background-color: transparent;
+	color: rgb(116, 173, 255);
+	cursor: grab;
+	box-shadow: 0 0 0 2px inset;
 }
-
 
 .SessionLayout_wrapper_open__6mmLw .SessionLayout_main__7VioL {
-    margin-left: -100px !important;
+	margin-left: -100px !important;
 }
 
-.kYuSQE, .dcPslF {
-    margin-left: 90px;
+.kYuSQE,
+.dcPslF {
+	margin-left: 90px;
 }
 
 .StudentDashboardWrapper_wrapper__6YU53 {
-    margin-left: 15%;
+	margin-left: 15%;
 }
