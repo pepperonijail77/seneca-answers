@@ -80,13 +80,50 @@ async function chrome() {
 	console.log('Built for Chrome.');
 }
 
+function chromium() {
+	const output = createWriteStream('dist/seneca-answers.zip');
+	const archive = archiver('zip', {
+		zlib: {level: 9},
+	});
+
+	output.on('close', () => {
+		console.log('Built for Chromium.');
+	});
+
+	archive.on('warning', e => {
+		if (e.code === 'ENOENT') {
+			console.warn(e);
+		} else {
+			throw e;
+		}
+	});
+	archive.on('error', err);
+
+	archive.pipe(output);
+
+	archive.file('manifest.v3.json', {name: 'manifest.json'});
+	archive.directory('icons/', 'icons');
+	['background.js', 'content.js', 'overlay.css'].forEach(file => {
+		archive.file(file, {name: file});
+	});
+
+	archive.finalize();
+}
+
 const browser = process.argv[2];
 if (browser === 'firefox') {
 	firefox();
 } else if (browser === 'chrome') {
 	chrome();
+} else if (
+	browser === 'chromium' ||
+	browser === 'edge' ||
+	browser === 'opera'
+) {
+	chromium();
 } else if (browser === undefined) {
 	firefox();
+	chromium();
 	chrome();
 } else {
 	console.error('Invalid browser');
