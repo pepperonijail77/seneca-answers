@@ -3,6 +3,8 @@
 	"name": "Seneca Answers",
 	"version": "2.0.1",
 	"description": "Web extension to get the answers to SenecaLearning lessons",
+	"author": "pepperonijail77",
+	"homepage_url": "https://github.com/pepperonijail77/seneca-answers",
 	"permissions": ["webRequest"],
 	"host_permissions": ["https://*.senecalearning.com/*"],
 	"background": {
