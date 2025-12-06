@@ -4,16 +4,16 @@
 
 Seneca Answers is an extension for Firefox and Chrome to get the answers to SenecaLearning lessons.
 
-![GitHub Stars](https://img.shields.io/github/stars/pepperonijail77/seneca-answers?style=flat)
 ![GitHub Release](https://img.shields.io/github/v/release/pepperonijail77/seneca-answers)
 ![GitHub Downloads](https://img.shields.io/github/downloads/pepperonijail77/seneca-answers/total)
-![GitHub last commit](https://img.shields.io/github/last-commit/pepperonijail77/seneca-answers)
+![Mozilla Add-on Users](https://img.shields.io/amo/users/seneca-answers)
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/pepperonijail77/seneca-answers/latest/dev)
-![Mozilla Add-on Stars](https://img.shields.io/amo/stars/seneca-answers)
+
+![Screenshot](screenshots/screenshot-480.png)
 
 ## Instalation
 
-[![](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/seneca-answers/)
+[![Get the Add-on](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/seneca-answers/)
 
 ### Manual installation
 
