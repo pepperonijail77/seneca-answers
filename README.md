@@ -14,6 +14,7 @@ Seneca Answers is an extension for Firefox and Chrome to get the answers to Sene
 ## Instalation
 
 [![Get the Add-on](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/seneca-answers/)
+[<img src="https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/add-ons-badge-images/microsoft-edge-add-ons-badge.png" alt="Get it from Microsoft Edge" height="60">](https://microsoftedge.microsoft.com/addons/detail/seneca-answers/bokkhhblppjnkonkllaccbneanfenncg)
 
 ### Manual installation
 
