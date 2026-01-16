@@ -125,7 +125,8 @@ function updateAnswers(seneca) {
 					let sentence = [];
 					for (let j of i.value) {
 						if (typeof j === 'string') sentence.push(j);
-						else if (typeof j === 'object') sentence.push(`<u>${j.word}</u>`);
+						else if (typeof j === 'object')
+							sentence.push(`<u>${j.word}</u>`);
 					}
 					sentences.push(sentence.join(''));
 				}
@@ -133,8 +134,8 @@ function updateAnswers(seneca) {
 					answer.moduleType === 'list'
 						? 'List'
 						: answer.moduleType === 'exact-list'
-						? 'Exact List'
-						: 'Mind map'
+							? 'Exact List'
+							: 'Mind map'
 				}</h3><p><strong>${
 					answer.content.statement
 				}</strong></p><p>${sentences.join('<br><br>')}</p>`;
@@ -143,11 +144,10 @@ function updateAnswers(seneca) {
 			case 'flow': {
 				row.innerHTML = `<h3>Flow</h3><p>${answer.content.title}</p>`; // <p>${answer.content.orderedValues.join('<br>')}</p>`;
 				const table = row.appendChild(document.createElement('table'));
-				table.appendChild(
-					document.createElement('tbody')
-				).innerHTML = `<tr>${answer.content.orderedValues.join(
-					'</tr><tr>'
-				)}</tr>`;
+				table.appendChild(document.createElement('tbody')).innerHTML =
+					`<tr>${answer.content.orderedValues.join(
+						'</tr><tr>'
+					)}</tr>`;
 				break;
 			}
 			case 'grid': {
@@ -159,7 +159,9 @@ function updateAnswers(seneca) {
 						else if (typeof word === 'object')
 							sentence.push(word.caps || word.word);
 					}
-					grid.push(`<tr><td>${sentence.join('')}</td><td>${i.text}</td></tr>`);
+					grid.push(
+						`<tr><td>${sentence.join('')}</td><td>${i.text}</td></tr>`
+					);
 				}
 				row.innerHTML = `<h3>Grid</h3>`;
 				const table = row.appendChild(document.createElement('table'));
@@ -172,10 +174,14 @@ function updateAnswers(seneca) {
 				for (let word of answer.content.words) {
 					if (typeof word === 'string') sentence.push(word);
 					else if (typeof word === 'object')
-						sentence.push(`<u>${word.word.split('__')[1] || word.word}</u>`);
+						sentence.push(
+							`<u>${word.word.split('__')[1] || word.word}</u>`
+						);
 				}
 				row.innerHTML = `<h3>${
-					answer.moduleType === 'wordfill' ? 'Wordfill' : 'Image Description'
+					answer.moduleType === 'wordfill'
+						? 'Wordfill'
+						: 'Image Description'
 				}</h3><p>${sentence.join('')}</p>`;
 				break;
 			}
@@ -202,18 +208,23 @@ function updateAnswers(seneca) {
 					);
 					values.push('');
 					for (let val of value.value) {
-						if (typeof val === 'string') values[values.length - 1] += val;
+						if (typeof val === 'string')
+							values[values.length - 1] += val;
 						else if (typeof val === 'object')
 							values[values.length - 1] += val.word;
 					}
 				}
 				row.innerHTML = `<h3>Image List</h3>`;
-				const details = row.appendChild(document.createElement('details'));
+				const details = row.appendChild(
+					document.createElement('details')
+				);
 				details.innerHTML = `<summary>${
 					answer.content.statement || seneca.title
 				}</summary>`;
 				for (let i = 0; i < images.length; i++) {
-					const span = details.appendChild(document.createElement('span'));
+					const span = details.appendChild(
+						document.createElement('span')
+					);
 					span.innerHTML = images[i] + values[i] + '<br><br>';
 				}
 				break;
@@ -278,7 +289,8 @@ function updateAnswers(seneca) {
 				const sentence = [];
 				for (let i of answer.content.sentence) {
 					if (typeof i === 'string') sentence.push(i);
-					else if (typeof i === 'object') sentence.push(`<u>${i.word}</u>`);
+					else if (typeof i === 'object')
+						sentence.push(`<u>${i.word}</u>`);
 				}
 				row.innerHTML = `<h3>Wrong Word</h3><p>${sentence.join('')}</p>`;
 				break;

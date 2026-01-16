@@ -8,9 +8,7 @@
 	},
 	"description": "Web extension to get the answers to SenecaLearning lessons",
 	"permissions": ["webRequest", "https://*.senecalearning.com/*"],
-	"background": {
-		"scripts": ["background.js"]
-	},
+	"background": {"scripts": ["background.js"]},
 	"content_scripts": [
 		{
 			"matches": ["https://app.senecalearning.com/*"],

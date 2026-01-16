@@ -17,9 +17,7 @@ mkdir('dist', {recursive: true}, err);
 
 function firefox() {
 	const output = createWriteStream('dist/seneca-answers.xpi');
-	const archive = archiver('zip', {
-		zlib: {level: 9},
-	});
+	const archive = archiver('zip', {zlib: {level: 9}});
 
 	output.on('close', () => {
 		console.log('Built for Firefox.');
@@ -82,9 +80,7 @@ async function chrome() {
 
 function chromium() {
 	const output = createWriteStream('dist/seneca-answers.zip');
-	const archive = archiver('zip', {
-		zlib: {level: 9},
-	});
+	const archive = archiver('zip', {zlib: {level: 9}});
 
 	output.on('close', () => {
 		console.log('Built for Chromium.');
