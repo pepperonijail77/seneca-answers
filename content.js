@@ -54,7 +54,6 @@ document.getElementById('get-answers').addEventListener('click', () => {
 		pos2 = pos4 - e.clientY;
 		pos3 = e.clientX;
 		pos4 = e.clientY;
-		console.log(pos1, pos2);
 		elt.style.top = elt.offsetTop - pos2 + 'px';
 		elt.style.right =
 			document.body.offsetWidth -
