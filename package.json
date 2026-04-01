@@ -1,11 +1,14 @@
 {
 	"name": "seneca-answers",
-	"version": "1.0.0",
+	"version": "2.0.1",
 	"description": "Seneca Answers",
 	"main": "content.js",
 	"type": "module",
 	"scripts": {
-		"test": "echo \"No test specified\" && exit 1"
+		"test": "echo \"No test specified\" && exit 1",
+		"build": "node build.js",
+		"build:firefox": "node build.js firefox",
+		"build:chrome": "node build.js chrome"
 	},
 	"private": true,
 	"keywords": [
@@ -19,7 +22,6 @@
 	"author": "pepperonijail77",
 	"license": "GPL-3.0-or-later",
 	"dependencies": {
-		"archiver": "^7.0.1",
-		"crx": "^5.0.1"
+		"archiver": "^7.0.1"
 	}
 }

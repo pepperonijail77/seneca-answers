@@ -1,13 +1,5 @@
-import {
-	mkdir,
-	copyFileSync,
-	createWriteStream,
-	readFileSync,
-	writeFile,
-	rm,
-} from 'node:fs';
+import {mkdir, copyFileSync, createWriteStream, readFileSync} from 'node:fs';
 import archiver from 'archiver';
-import ChromeExtension from 'crx';
 
 const err = e => {
 	if (e) throw e;
@@ -15,113 +7,52 @@ const err = e => {
 
 mkdir('dist', {recursive: true}, err);
 
-function firefox() {
-	const output = createWriteStream('dist/seneca-answers.xpi');
-	const archive = archiver('zip', {zlib: {level: 9}});
+const files = ['background.js', 'content.js', 'overlay.css'];
+let dev = false;
 
-	output.on('close', () => {
-		console.log('Built for Firefox.');
-	});
+function build(outputFile, manifest) {
+	return new Promise((resolve, reject) => {
+		const output = createWriteStream('dist/' + outputFile);
+		const archive = archiver('zip', {zlib: {level: 9}});
 
-	archive.on('warning', e => {
-		if (e.code === 'ENOENT') {
-			console.warn(e);
+		output.on('close', resolve);
+		archive.on('warning', e => (e.code === 'ENOENT' ? console.warn(e) : reject(e)));
+		archive.on('error', reject);
+		archive.pipe(output);
+
+		archive.file(manifest, {name: 'manifest.json'});
+		archive.directory('src/icons/', 'icons');
+
+		if (dev) {
+			archive.directory('src/', false);
 		} else {
-			throw e;
+			files.forEach(file => archive.file('src/' + file, {name: file}));
 		}
+
+		archive.finalize();
 	});
-	archive.on('error', err);
-
-	archive.pipe(output);
-
-	archive.file('manifest.v2.json', {name: 'manifest.json'});
-	archive.directory('icons/', 'icons');
-	['background.js', 'content.js', 'overlay.css'].forEach(file => {
-		archive.file(file, {name: file});
-	});
-
-	archive.finalize();
 }
 
-async function chrome() {
-	const crx = new ChromeExtension({
-		codebase: 'dist/seneca-answers.crx',
-		privateKey: readFileSync('key.pem', err),
-	});
+const targets = {
+	firefox: () =>
+		build(`seneca-answers-firefox${dev ? '-dev' : ''}.xpi`, 'manifest.v2.json')
+			.then(() => console.log('Built for Firefox.'))
+			.catch(err),
+	chrome: () =>
+		build(`seneca-answers-chrome${dev ? '-dev' : ''}.zip`, 'manifest.v3.json')
+			.then(() => console.log('Built for Chrome.'))
+			.catch(err),
+};
 
-	mkdir('tmp', {recursive: true}, err);
-	mkdir('tmp/icons', {recursive: true}, err);
-
-	try {
-		copyFileSync('manifest.v3.json', 'tmp/manifest.json');
-		[
-			'background.js',
-			'content.js',
-			'overlay.css',
-			'icons/icon-192.png',
-		].forEach(file => {
-			copyFileSync(file, 'tmp/' + file);
-		});
-	} catch (err) {
-		rm('tmp', {recursive: true}, err);
-		throw err;
-	}
-
-	await crx
-		.load('tmp')
-		.then(crx => crx.pack())
-		.then(crxBuffer => writeFile('dist/seneca-answers.crx', crxBuffer, err))
-		.catch(err);
-
-	rm('tmp', {recursive: true}, err);
-
-	console.log('Built for Chrome.');
-}
-
-function chromium() {
-	const output = createWriteStream('dist/seneca-answers.zip');
-	const archive = archiver('zip', {zlib: {level: 9}});
-
-	output.on('close', () => {
-		console.log('Built for Chromium.');
-	});
-
-	archive.on('warning', e => {
-		if (e.code === 'ENOENT') {
-			console.warn(e);
-		} else {
-			throw e;
-		}
-	});
-	archive.on('error', err);
-
-	archive.pipe(output);
-
-	archive.file('manifest.v3.json', {name: 'manifest.json'});
-	archive.directory('icons/', 'icons');
-	['background.js', 'content.js', 'overlay.css'].forEach(file => {
-		archive.file(file, {name: file});
-	});
-
-	archive.finalize();
-}
+if (process.argv[3] === 'dev') dev = true;
 
 const browser = process.argv[2];
-if (browser === 'firefox') {
-	firefox();
-} else if (browser === 'chrome') {
-	chrome();
-} else if (
-	browser === 'chromium' ||
-	browser === 'edge' ||
-	browser === 'opera'
-) {
-	chromium();
-} else if (browser === undefined) {
-	firefox();
-	chromium();
-	chrome();
+
+if (browser === undefined) {
+	Promise.all(Object.values(targets).map(fn => fn()));
+} else if (targets[browser]) {
+	targets[browser]();
 } else {
-	console.error('Invalid browser');
+	console.error('Invalid browser:', browser);
 	process.exit(1);
 }
