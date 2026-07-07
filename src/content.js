@@ -1,90 +1,7 @@
 const brow = typeof browser === 'undefined' ? window.chrome : browser;
 
-const overlay = document.body.appendChild(document.createElement('div'));
-overlay.id = 'overlay';
-overlay.innerHTML = `
-	<div id="overlay-content">
-		<button id="get-answers">Get answers</button>
-		<button id="move">Move</button>
-		<button id="close">X</button>
-		<div>
-			<table id="result">
-			</table>
-		</div>
-	</div>
-`;
-const result = document.getElementById('result');
 const signedUrls = {};
-
-document.getElementById('get-answers').addEventListener('click', () => {
-	const url = window.location.href.split('/');
-	if (signedUrls[url[7]]) {
-		fetch(signedUrls[url[7]])
-			.then(r => r.json())
-			.then(d => {
-				updateAnswers(d);
-				console.log(d);
-			})
-			.catch(e => console.error(e));
-	}
-});
-
-// Move
-(function (elt, move) {
-	let pos1 = 0,
-		pos2 = 0,
-		pos3 = 0,
-		pos4 = 0;
-	move.onmousedown = dragMouseDown;
-
-	function dragMouseDown(e) {
-		move.style.cursor = 'grabbing';
-		e = e || window.event;
-		e.preventDefault();
-		pos3 = e.clientX;
-		pos4 = e.clientY;
-		document.onmouseup = closeDragElement;
-		document.onmousemove = elementDrag;
-	}
-
-	function elementDrag(e) {
-		e = e || window.event;
-		e.preventDefault();
-		pos1 = pos3 - e.clientX;
-		pos2 = pos4 - e.clientY;
-		pos3 = e.clientX;
-		pos4 = e.clientY;
-		elt.style.top = elt.offsetTop - pos2 + 'px';
-		elt.style.right =
-			document.body.offsetWidth -
-			elt.offsetWidth -
-			elt.offsetLeft +
-			pos1 +
-			'px';
-	}
-
-	function closeDragElement() {
-		move.style.cursor = 'grab';
-		document.onmouseup = null;
-		document.onmousemove = null;
-	}
-})(document.getElementById('overlay'), document.getElementById('move'));
-
-// Close
-document.getElementById('close').addEventListener('click', () => {
-	document.getElementById('overlay').hidden = true;
-});
-
-brow.runtime.onMessage.addListener(message => {
-	fetch(message.url)
-		.then(r => r.json())
-		.then(d => {
-			signedUrls[d.id] = message.url;
-			updateAnswers(d);
-			console.log(d);
-		})
-		.catch(e => console.error(e));
-});
+const keys = {};
 
 function updateAnswers(seneca) {
 	result.innerHTML = 'Loading...';
@@ -124,8 +41,7 @@ function updateAnswers(seneca) {
 					let sentence = [];
 					for (let j of i.value) {
 						if (typeof j === 'string') sentence.push(j);
-						else if (typeof j === 'object')
-							sentence.push(`<u>${j.word}</u>`);
+						else if (typeof j === 'object') sentence.push(`<u>${j.word}</u>`);
 					}
 					sentences.push(sentence.join(''));
 				}
@@ -144,9 +60,7 @@ function updateAnswers(seneca) {
 				row.innerHTML = `<h3>Flow</h3><p>${answer.content.title}</p>`; // <p>${answer.content.orderedValues.join('<br>')}</p>`;
 				const table = row.appendChild(document.createElement('table'));
 				table.appendChild(document.createElement('tbody')).innerHTML =
-					`<tr>${answer.content.orderedValues.join(
-						'</tr><tr>'
-					)}</tr>`;
+					`<tr>${answer.content.orderedValues.join('</tr><tr>')}</tr>`;
 				break;
 			}
 			case 'grid': {
@@ -155,12 +69,9 @@ function updateAnswers(seneca) {
 					let sentence = [];
 					for (let word of i.word) {
 						if (typeof word === 'string') sentence.push(word);
-						else if (typeof word === 'object')
-							sentence.push(word.caps || word.word);
+						else if (typeof word === 'object') sentence.push(word.caps || word.word);
 					}
-					grid.push(
-						`<tr><td>${sentence.join('')}</td><td>${i.text}</td></tr>`
-					);
+					grid.push(`<tr><td>${sentence.join('')}</td><td>${i.text}</td></tr>`);
 				}
 				row.innerHTML = `<h3>Grid</h3>`;
 				const table = row.appendChild(document.createElement('table'));
@@ -173,22 +84,17 @@ function updateAnswers(seneca) {
 				for (let word of answer.content.words) {
 					if (typeof word === 'string') sentence.push(word);
 					else if (typeof word === 'object')
-						sentence.push(
-							`<u>${word.word.split('__')[1] || word.word}</u>`
-						);
+						sentence.push(`<u>${word.word.split('__')[1] || word.word}</u>`);
 				}
 				row.innerHTML = `<h3>${
-					answer.moduleType === 'wordfill'
-						? 'Wordfill'
-						: 'Image Description'
+					answer.moduleType === 'wordfill' ? 'Wordfill' : 'Image Description'
 				}</h3><p>${sentence.join('')}</p>`;
 				break;
 			}
 			case 'image-label': {
 				const labels = [];
 				for (let label of answer.content.labels) {
-					if (label.word.isMixedDefinition)
-						labels.push(label.word.processedWord[0].caps);
+					if (label.word.isMixedDefinition) labels.push(label.word.processedWord[0].caps);
 					else labels.push(label.word.caps);
 				}
 				row.innerHTML = `<h3>Image Label</h3><p>${
@@ -207,23 +113,15 @@ function updateAnswers(seneca) {
 					);
 					values.push('');
 					for (let val of value.value) {
-						if (typeof val === 'string')
-							values[values.length - 1] += val;
-						else if (typeof val === 'object')
-							values[values.length - 1] += val.word;
+						if (typeof val === 'string') values[values.length - 1] += val;
+						else if (typeof val === 'object') values[values.length - 1] += val.word;
 					}
 				}
 				row.innerHTML = `<h3>Image List</h3>`;
-				const details = row.appendChild(
-					document.createElement('details')
-				);
-				details.innerHTML = `<summary>${
-					answer.content.statement || seneca.title
-				}</summary>`;
+				const details = row.appendChild(document.createElement('details'));
+				details.innerHTML = `<summary>${answer.content.statement || seneca.title}</summary>`;
 				for (let i = 0; i < images.length; i++) {
-					const span = details.appendChild(
-						document.createElement('span')
-					);
+					const span = details.appendChild(document.createElement('span'));
 					span.innerHTML = images[i] + values[i] + '<br><br>';
 				}
 				break;
@@ -288,17 +186,187 @@ function updateAnswers(seneca) {
 				const sentence = [];
 				for (let i of answer.content.sentence) {
 					if (typeof i === 'string') sentence.push(i);
-					else if (typeof i === 'object')
-						sentence.push(`<u>${i.word}</u>`);
+					else if (typeof i === 'object') sentence.push(`<u>${i.word}</u>`);
 				}
 				row.innerHTML = `<h3>Wrong Word</h3><p>${sentence.join('')}</p>`;
 				break;
 			}
 			default: {
-				row.innerHTML = `<h3>${answer.moduleType}</h3><p>${JSON.stringify(
-					answer
-				)}</p>`;
+				row.innerHTML = `<h3>${answer.moduleType}</h3><p>${JSON.stringify(answer)}</p>`;
 			}
 		}
 	}
 }
+
+function extractKeys() {
+	return new Promise((resolve, reject) => {
+		try {
+			let keys;
+			const req = indexedDB.open('firebaseLocalStorageDb', 1);
+
+			req.onerror = event => {
+				console.error('Failed to open database:', event.target.error);
+				reject(event.target.error);
+			};
+
+			req.onsuccess = event => {
+				const db = event.target.result;
+				const transaction = db.transaction('firebaseLocalStorage', 'readonly');
+				const store = transaction.objectStore('firebaseLocalStorage');
+				const query = store.getAll();
+
+				transaction.oncomplete = () => {
+					db.close();
+				};
+
+				query.onerror = event => {
+					console.error('Failed to extract keys:', event.target.error);
+					reject(event.target.error);
+				};
+
+				query.onsuccess = () => {
+					resolve({
+						apiKey: query.result[0].value.apiKey,
+						refreshToken: query.result[0].value.stsTokenManager.refreshToken,
+					});
+				};
+			};
+		} catch (error) {
+			reject(error);
+		}
+	});
+}
+
+async function getAccessToken() {
+	if (keys.apiKey === undefined || keys.refreshToken === undefined)
+		({apiKey: keys.apiKey, refreshToken: keys.refreshToken} = await extractKeys());
+
+	await brow.runtime
+		.sendMessage({type: 'accessToken', apiKey: keys.apiKey, refreshToken: keys.refreshToken})
+		.then(r => {
+			if (r.success) keys.accessToken = r.accessToken;
+			else console.error('Error getting access token: ' + r.error);
+		})
+		.catch(e => console.error('Error getting access token: ' + e.message));
+}
+
+async function getUserId() {
+	if (keys.accessToken === undefined) await getAccessToken();
+
+	await brow.runtime
+		.sendMessage({type: 'userId', accessToken: keys.accessToken})
+		.then(r => {
+			if (r.success) keys.userId = r.userId;
+			else console.error('Error getting user ID: ' + r.error);
+		})
+		.catch(e => console.error('Error getting user ID: ' + e.message));
+}
+
+async function getSignedUrl(courseId, sectionId) {
+	if (keys.accessToken === undefined) await getAccessToken();
+
+	return await brow.runtime
+		.sendMessage({
+			type: 'signedUrl',
+			courseId: courseId,
+			sectionId: sectionId,
+			accessToken: keys.accessToken,
+		})
+		.then(r => {
+			if (r.success) return r.url;
+			else console.error('Error getting signed URL: ' + r.error);
+		})
+		.catch(e => console.error('Error getting signed URL: ' + e.message));
+}
+
+async function autoComplete(courseId, sectionId) {
+	if (keys.userId === undefined) await getUserId();
+}
+
+const overlay = document.body.appendChild(document.createElement('div'));
+overlay.id = 'overlay';
+overlay.innerHTML = `
+	<div id="overlay-content">
+		<button id="refresh">Refresh</button>
+		<button id="move">Move</button>
+		<button id="close">X</button>
+		<div>
+			<table id="result">
+			</table>
+		</div>
+	</div>
+`;
+const result = document.getElementById('result');
+
+// Refresh
+document.getElementById('refresh').addEventListener('click', async () => {
+	getUserId();
+
+	const url = window.location.href.split('/');
+	if (signedUrls[url[7]]) {
+		fetch(signedUrls[url[7]])
+			.then(r => r.json())
+			.then(d => updateAnswers(d))
+			.catch(e => console.error(e));
+	} else {
+		const signedUrl = await getSignedUrl(url[5], url[7]);
+		fetch(signedUrl)
+			.then(r => r.json())
+			.then(d => {
+				signedUrls[d.id] = signedUrl;
+				updateAnswers(d);
+			})
+			.catch(e => console.error(e));
+	}
+});
+
+// Move
+(function (elt, move) {
+	let pos1 = 0,
+		pos2 = 0,
+		pos3 = 0,
+		pos4 = 0;
+	move.onmousedown = dragMouseDown;
+
+	function dragMouseDown(e) {
+		move.style.cursor = 'grabbing';
+		e = e || window.event;
+		e.preventDefault();
+		pos3 = e.clientX;
+		pos4 = e.clientY;
+		document.onmouseup = closeDragElement;
+		document.onmousemove = elementDrag;
+	}
+
+	function elementDrag(e) {
+		e = e || window.event;
+		e.preventDefault();
+		pos1 = pos3 - e.clientX;
+		pos2 = pos4 - e.clientY;
+		pos3 = e.clientX;
+		pos4 = e.clientY;
+		elt.style.top = elt.offsetTop - pos2 + 'px';
+		elt.style.right = document.body.offsetWidth - elt.offsetWidth - elt.offsetLeft + pos1 + 'px';
+	}
+
+	function closeDragElement() {
+		move.style.cursor = 'grab';
+		document.onmouseup = null;
+		document.onmousemove = null;
+	}
+})(document.getElementById('overlay'), document.getElementById('move'));
+
+// Close
+document.getElementById('close').addEventListener('click', () => {
+	document.getElementById('overlay').hidden = true;
+});
+
+brow.runtime.onMessage.addListener(message => {
+	fetch(message.url)
+		.then(r => r.json())
+		.then(d => {
+			signedUrls[d.id] = message.url;
+			updateAnswers(d);
+		})
+		.catch(e => console.error(e));
+});
