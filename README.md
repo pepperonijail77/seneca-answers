@@ -1,6 +1,4 @@
-![Icon](icons/icon-192.png)
-
-# Seneca Answers
+# ![Icon](src/icons/icon-192.png)<br>Seneca Answers
 
 Seneca Answers is an extension for Firefox and Chrome to get the answers to SenecaLearning lessons.
 
@@ -67,6 +65,12 @@ Clone the repo.
 git clone https://github.com/pepperonijail77/seneca-answers.git
 ```
 
+or
+
+```sh
+gh repo clone pepperonijail77/seneca-answers
+```
+
 In the root directory install all the npm dependencies.
 
 ```sh
@@ -74,25 +78,26 @@ npm install
 ```
 
 </details>
+<br>
 
-In the root directory run build.js with node.js.
+In the root directory run build.js with npm.
 
 Firefox:
 
 ```sh
-node build.js firefox
+npm run build:firefox
 ```
 
 Chromium:
 
 ```sh
-node build.js chrome
+npm run build:chrome
 ```
 
 Both:
 
 ```sh
-node build.js
+npm run build
 ```
 
 The built files will be in `/dist`.
