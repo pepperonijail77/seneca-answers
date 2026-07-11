@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Seneca Answers",
-	"version": "2.0.1",
+	"version": "2.1.0",
 	"developer": {"name": "pepperonijail77", "url": "https://github.com/pepperonijail77"},
 	"description": "Web extension to get the answers to SenecaLearning lessons",
 	"permissions": ["webRequest", "declarativeNetRequest", "*://*.senecalearning.com/*"],
