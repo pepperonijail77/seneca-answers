@@ -266,12 +266,7 @@ async function getSignedUrl(courseId, sectionId) {
 	if (keys.accessToken === undefined) await getAccessToken();
 
 	return await brow.runtime
-		.sendMessage({
-			type: 'signedUrl',
-			courseId: courseId,
-			sectionId: sectionId,
-			accessToken: keys.accessToken,
-		})
+		.sendMessage({type: 'signedUrl', courseId, sectionId, accessToken: keys.accessToken})
 		.then(r => {
 			if (r.success) return r.url;
 			else console.error('Error getting signed URL: ' + r.error);
@@ -279,14 +274,117 @@ async function getSignedUrl(courseId, sectionId) {
 		.catch(e => console.error('Error getting signed URL: ' + e.message));
 }
 
-async function autoComplete(courseId, sectionId) {
+function generateTimes(min, max, count) {
+	let time = new Date();
+	const times = [time.toISOString().replace(/\.\d{3}Z$/, '+00:00')];
+
+	for (let i = 0; i < count; i++) {
+		const duration = Math.floor(Math.random() * (max - min + 1) + min);
+		time = new Date(time.getTime() - duration * 1000);
+		times.unshift(time.toISOString().replace(/\.\d{3}Z$/, '+00:00'));
+	}
+
+	return times;
+}
+
+async function autoComplete(courseId, sectionId, content) {
 	if (keys.userId === undefined) await getUserId();
+
+	const sessionId = crypto.randomUUID();
+	const contentModules = content.contentModules || [];
+	const times = generateTimes(5, 25, contentModules.length);
+
+	let questions = 0;
+	const modules = contentModules.map((module, idx) => {
+		const isQuestion = ![
+			'concept',
+			'delve',
+			'flashcard',
+			'hierarchy',
+			'hyper-flashcard',
+			'image',
+			'pattern',
+			'text-block',
+			'video',
+		].includes(module.moduleType);
+		if (isQuestion) questions++;
+
+		const moduleData = {
+			sessionId,
+			moduleOrder: idx,
+			moduleId: module.id,
+			moduleType: module.moduleType,
+			timeStarted: times[idx],
+			timeFinished: times[idx + 1],
+			gaveUp: false,
+			submitted: isQuestion,
+			completed: true,
+			testingActive: isQuestion,
+			content: {},
+			score: isQuestion ? 1 : 0,
+			moduleScore: {score: 1},
+			userAnswer: module.moduleType === 'toggles' ? [] : {},
+			courseId,
+			sectionId,
+			contentId: content.id,
+		};
+
+		if (!isQuestion) {
+			delete moduleData.moduleScore;
+			delete moduleData.userAnswer;
+		}
+
+		return moduleData;
+	});
+
+	const body = {
+		platform: 'seneca',
+		clientVersion: '4.0.0',
+		userId: keys.userId,
+		session: {
+			sessionId,
+			courseId,
+			timeStarted: times[0],
+			timeFinished: times[times.length - 1],
+			startingProficiency: 0,
+			endingProficiency: 1, // 0.5,
+			startingCourseProficiency: Math.random() * 0.05,
+			endingCourseProficiency: Math.random() * 0.05 + 0.05,
+			endingCourseScore: Math.random() * 0.05 + 0.05,
+			sessionScore: 1,
+			completed: true,
+			modulesCorrect: questions,
+			modulesIncorrect: 0,
+			averageScore: 1,
+			modulesGaveUp: 0,
+			modulesStudied: contentModules.length,
+			modulesTested: questions,
+			sessionType: 'adaptive',
+			sectionIds: [sectionId],
+			contentIds: [content.id],
+			options: {hasHardestQuestionContent: content.contentType === 'hardestQuestions'},
+		},
+		modules,
+	};
+
+	const response = await brow.runtime.sendMessage({
+		type: 'autoComplete',
+		body,
+		accessToken: keys.accessToken,
+	});
+	if (!response.success) {
+		await getAccessToken();
+		brow.runtime
+			.sendMessage({type: 'autoComplete', body, accessToken: keys.accessToken})
+			.catch(e => console.error('Error autocompleting section: ' + e.error));
+	}
 }
 
 const overlay = document.body.appendChild(document.createElement('div'));
 overlay.id = 'overlay';
 overlay.innerHTML = `
 	<div id="overlay-content">
+		<button id="complete">Complete</button>
 		<button id="refresh">Refresh</button>
 		<button id="move">Move</button>
 		<button id="close">X</button>
@@ -300,24 +398,32 @@ const result = document.getElementById('result');
 
 // Refresh
 document.getElementById('refresh').addEventListener('click', async () => {
-	getUserId();
-
 	const url = window.location.href.split('/');
-	if (signedUrls[url[7]]) {
-		fetch(signedUrls[url[7]])
-			.then(r => r.json())
-			.then(d => updateAnswers(d))
-			.catch(e => console.error(e));
-	} else {
-		const signedUrl = await getSignedUrl(url[5], url[7]);
-		fetch(signedUrl)
-			.then(r => r.json())
-			.then(d => {
-				signedUrls[d.id] = signedUrl;
-				updateAnswers(d);
-			})
-			.catch(e => console.error(e));
-	}
+
+	const signedUrl = signedUrls[url[7]] || (await getSignedUrl(url[5], url[7]));
+	fetch(signedUrl)
+		.then(r => r.json())
+		.then(d => {
+			signedUrls[d.id] = signedUrl;
+			updateAnswers(d);
+		})
+		.catch(e => console.error('Error getting signed URL: ' + e.message));
+});
+
+// Complete
+document.getElementById('complete').addEventListener('click', async () => {
+	const url = window.location.href.split('/');
+
+	const signedUrl = signedUrls[url[7]] || (await getSignedUrl(url[5], url[7]));
+	fetch(signedUrl)
+		.then(r => r.json())
+		.then(d => {
+			signedUrls[d.id] = signedUrl;
+			d.contents.forEach(content => {
+				autoComplete(url[5], url[7], content);
+			});
+		})
+		.catch(e => console.error(e));
 });
 
 // Move
