@@ -10,9 +10,12 @@ mkdir('dist', {recursive: true}, err);
 const files = ['background.js', 'content.js', 'overlay.css'];
 let dev = false;
 
-function build(outputFile, manifest) {
+function build(target, dev, extension, manifest) {
+	const version = JSON.parse(readFileSync(manifest)).version;
 	return new Promise((resolve, reject) => {
-		const output = createWriteStream('dist/' + outputFile);
+		const output = createWriteStream(
+			`dist/seneca-answers_${version}-${target}${dev ? '-dev' : ''}.${extension}`
+		);
 		const archive = archiver('zip', {zlib: {level: 9}});
 
 		output.on('close', resolve);
@@ -35,11 +38,11 @@ function build(outputFile, manifest) {
 
 const targets = {
 	firefox: () =>
-		build(`seneca-answers-firefox${dev ? '-dev' : ''}.xpi`, 'manifest.v2.json')
+		build('firefox', dev, 'xpi', 'manifest.v2.json')
 			.then(() => console.log('Built for Firefox.'))
 			.catch(err),
 	chrome: () =>
-		build(`seneca-answers-chrome${dev ? '-dev' : ''}.zip`, 'manifest.v3.json')
+		build('chrome', dev, 'zip', 'manifest.v3.json')
 			.then(() => console.log('Built for Chrome.'))
 			.catch(err),
 };
