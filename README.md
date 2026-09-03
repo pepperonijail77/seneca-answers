@@ -5,7 +5,7 @@ Seneca Answers is an extension for Firefox and Chrome to get the answers to Sene
 ![GitHub Release](https://img.shields.io/github/v/release/pepperonijail77/seneca-answers)
 ![GitHub Downloads](https://img.shields.io/github/downloads/pepperonijail77/seneca-answers/total)
 ![Mozilla Add-on Users](https://img.shields.io/amo/users/seneca-answers)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/pepperonijail77/seneca-answers/latest/dev)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/pepperonijail77/seneca-answers/latest)
 
 ![Screenshot](screenshots/screenshot-480.png)
 
