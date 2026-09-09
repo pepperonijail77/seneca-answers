@@ -287,12 +287,18 @@ function generateTimes(min, max, count) {
 	return times;
 }
 
-async function autoComplete(courseId, sectionId, content) {
+async function autoComplete(courseId, sectionId, content, medianTime = null) {
 	if (keys.userId === undefined) await getUserId();
 
 	const sessionId = crypto.randomUUID();
 	const contentModules = content.contentModules || [];
-	const times = generateTimes(5, 25, contentModules.length);
+	const times = medianTime
+		? generateTimes(
+				(0.8 * medianTime) / contentModules.length,
+				(1.2 * medianTime) / contentModules.length,
+				contentModules.length
+			)
+		: generateTimes(5, 13, contentModules.length);
 
 	let questions = 0;
 	const modules = contentModules.map((module, idx) => {
@@ -382,18 +388,16 @@ async function autoComplete(courseId, sectionId, content) {
 
 const overlay = document.body.appendChild(document.createElement('div'));
 overlay.id = 'overlay';
-overlay.innerHTML = `
-	<div id="overlay-content">
-		<button id="complete">Complete</button>
-		<button id="refresh">Refresh</button>
-		<button id="move">Move</button>
-		<button id="close">X</button>
-		<div>
-			<table id="result">
-			</table>
-		</div>
+overlay.innerHTML = `<div id="overlay-content">
+	<button id="complete">Complete</button>
+	<button id="refresh">Refresh</button>
+	<button id="move">Move</button>
+	<button id="close">X</button>
+	<div>
+		<table id="result">
+		</table>
 	</div>
-`;
+</div>`;
 const result = document.getElementById('result');
 
 // Refresh
@@ -420,7 +424,7 @@ document.getElementById('complete').addEventListener('click', async () => {
 		.then(d => {
 			signedUrls[d.id] = signedUrl;
 			d.contents.forEach(content => {
-				autoComplete(url[5], url[7], content);
+				autoComplete(url[5], url[7], content, d?.medianStudyTimeSecs);
 			});
 		})
 		.catch(e => console.error(e));
