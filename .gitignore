@@ -39,5 +39,8 @@ key.pem
 # JetBrains IDE
 .idea/
 
+# VSCodium
+.vscode/
+
 # Builds
 dist/
