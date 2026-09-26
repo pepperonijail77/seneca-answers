@@ -464,12 +464,10 @@ document.getElementById('complete').addEventListener('click', async function () 
 			assignment = await getAssignment(url[6]);
 			prev = incomplete;
 			incomplete = 0;
-			console.log(assignment.spec);
 
 			for (let task of assignment.spec.tasks) {
 				if (assignment.taskStats[task.id]?.score === 1) continue;
 				if (task.resourceType === 'section') {
-					console.log(task.sectionId);
 					incomplete++;
 					await sleep(100);
 					await completeSection(task.courseId, task.sectionId);
