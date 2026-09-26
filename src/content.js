@@ -306,8 +306,8 @@ async function completeContent(courseId, sectionId, content, medianTime = null) 
 	const contentModules = content.contentModules || [];
 	const times = medianTime
 		? generateTimes(
-				(0.8 * medianTime) / contentModules.length,
-				(1.2 * medianTime) / contentModules.length,
+				Math.ceil(0.9 * medianTime) / contentModules.length,
+				Math.floor(1.1 * medianTime) / contentModules.length,
 				contentModules.length
 			)
 		: generateTimes(5, 13, contentModules.length);
@@ -410,7 +410,12 @@ async function completeSection(courseId, sectionId) {
 		.catch(e => console.error(e));
 
 	for (let content of section.contents) {
-		await completeContent(courseId, sectionId, content, section?.medianStudyTimeSecs);
+		await completeContent(
+			courseId,
+			sectionId,
+			content,
+			section?.medianStudyTimeSecs / section.contents.length
+		);
 	}
 }
 
