@@ -49,7 +49,7 @@ Drag and drop `seneca-answers_X.X.X-chrome.zip` that you downloaded onto the pag
 
 ## Usage
 
-Go to any lesson on [Seneca](https://app.senecalearning.com/), and you will see an overlay on the right. Press `Complete` and reload the page to automatically complete the section in one click, or manually input the answers from the overlay and press `Refresh` to re-fetch the answers.
+Go to any lesson on [Seneca](https://app.senecalearning.com/), and you will see an overlay on the right. Press `Complete` and reload the page to automatically complete the section in one click, or manually input the answers from the overlay and press `Refresh` to re-fetch the answers. Alternatively, open an assignment and press `Complete` to automatically complete the whole assignment in one go.
 
 ## Build
 
