@@ -274,6 +274,18 @@ async function getSignedUrl(courseId, sectionId) {
 		.catch(e => console.error('Error getting signed URL: ' + e.message));
 }
 
+async function getAssignment(assignmentId) {
+	if (keys.accessToken === undefined) await getAccessToken();
+
+	return await brow.runtime
+		.sendMessage({type: 'assignment', assignmentId, accessToken: keys.accessToken})
+		.then(r => {
+			if (r.success) return r.assignments[0];
+			else console.error('Error getting assignments: ' + e.message);
+		})
+		.catch(e => console.error('Error getting assignments: ' + e.message));
+}
+
 function generateTimes(min, max, count) {
 	let time = new Date();
 	const times = [time.toISOString().replace(/\.\d{3}Z$/, '+00:00')];
@@ -287,7 +299,7 @@ function generateTimes(min, max, count) {
 	return times;
 }
 
-async function autoComplete(courseId, sectionId, content, medianTime = null) {
+async function completeContent(courseId, sectionId, content, medianTime = null) {
 	if (keys.userId === undefined) await getUserId();
 
 	const sessionId = crypto.randomUUID();
@@ -374,15 +386,31 @@ async function autoComplete(courseId, sectionId, content, medianTime = null) {
 	};
 
 	const response = await brow.runtime.sendMessage({
-		type: 'autoComplete',
+		type: 'completeContent',
 		body,
 		accessToken: keys.accessToken,
 	});
 	if (!response.success) {
 		await getAccessToken();
-		brow.runtime
-			.sendMessage({type: 'autoComplete', body, accessToken: keys.accessToken})
+		await brow.runtime
+			.sendMessage({type: 'completeContent', body, accessToken: keys.accessToken})
 			.catch(e => console.error('Error autocompleting section: ' + e.error));
+	}
+}
+
+async function completeSection(courseId, sectionId) {
+	const signedUrl = signedUrls[sectionId] || (await getSignedUrl(courseId, sectionId));
+	let section;
+	await fetch(signedUrl)
+		.then(r => r.json())
+		.then(d => {
+			signedUrls[d.id] = signedUrl;
+			section = d;
+		})
+		.catch(e => console.error(e));
+
+	for (let content of section.contents) {
+		await completeContent(courseId, sectionId, content, section?.medianStudyTimeSecs);
 	}
 }
 
@@ -415,19 +443,44 @@ document.getElementById('refresh').addEventListener('click', async () => {
 });
 
 // Complete
-document.getElementById('complete').addEventListener('click', async () => {
+document.getElementById('complete').addEventListener('click', async function () {
+	this.innerText = 'Completing...';
+
 	const url = window.location.href.split('/');
 
-	const signedUrl = signedUrls[url[7]] || (await getSignedUrl(url[5], url[7]));
-	fetch(signedUrl)
-		.then(r => r.json())
-		.then(d => {
-			signedUrls[d.id] = signedUrl;
-			d.contents.forEach(content => {
-				autoComplete(url[5], url[7], content, d?.medianStudyTimeSecs);
-			});
-		})
-		.catch(e => console.error(e));
+	if (url[6] === 'section') {
+		await completeSection(url[5], url[7]);
+	} else if (url[5] === 'assignment') {
+		let assignment, prev;
+		let incomplete = -1;
+		const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+		while (incomplete !== 0) {
+			assignment = await getAssignment(url[6]);
+			prev = incomplete;
+			incomplete = 0;
+			console.log(assignment.spec);
+
+			for (let task of assignment.spec.tasks) {
+				if (assignment.taskStats[task.id]?.score === 1) continue;
+				if (task.resourceType === 'section') {
+					console.log(task.sectionId);
+					incomplete++;
+					await sleep(100);
+					await completeSection(task.courseId, task.sectionId);
+				}
+			}
+
+			if (incomplete === prev) {
+				result.innerText = 'Partially done, reload the page and press complete again to continue.';
+				break;
+			}
+
+			await sleep(3000);
+		}
+	}
+
+	this.innerText = 'Complete';
 });
 
 // Move

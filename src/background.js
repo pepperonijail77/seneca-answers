@@ -90,8 +90,25 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				.catch(e => sendResponse({success: false, error: e.message}));
 			return true;
 		}
-		case 'autoComplete': {
-			fetch(`https://stats.app.senecalearning.com/api/stats/sessions`, {
+		case 'assignment': {
+			fetch(
+				`https://assignments.app.senecalearning.com/api/students/me/assignments?limit=100&assignmentId=${message.assignmentId}`,
+				{
+					headers: {
+						'access-key': message.accessToken,
+						correlationId: `${Date.now()}::${crypto.randomUUID()}`,
+					},
+				}
+			)
+				.then(r => r.json())
+				.then(d => {
+					sendResponse({success: true, assignments: d.items});
+				})
+				.catch(e => sendResponse({success: false, error: e.message}));
+			return true;
+		}
+		case 'completeContent': {
+			fetch('https://stats.app.senecalearning.com/api/stats/sessions', {
 				method: 'POST',
 				headers: {
 					'access-key': message.accessToken,
