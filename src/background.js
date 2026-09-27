@@ -42,7 +42,12 @@ browser.webRequest.onSendHeaders.addListener(
 			console.log(details.url);
 		}
 	},
-	{urls: ['https://course-cdn-v2.app.senecalearning.com/api/courses/*/sections/*']},
+	{
+		urls: [
+			'https://course-cdn-v2.app.senecalearning.com/api/courses/*/sections/*',
+			// 'https://short-answer.app.senecalearning.com/api/questions/query?*',
+		],
+	},
 	['requestHeaders']
 );
 
@@ -103,6 +108,23 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				.then(r => r.json())
 				.then(d => {
 					sendResponse({success: true, assignments: d.items});
+				})
+				.catch(e => sendResponse({success: false, error: e.message}));
+			return true;
+		}
+		case 'examQuestions': {
+			fetch(
+				`https://short-answer.app.senecalearning.com/api/questions/query?courseId=${message.courseId}${message.sectionId ? '&sectionId=' + message.sectionId : ''}&enrich=question`,
+				{
+					headers: {
+						'access-key': message.accessToken,
+						correlationId: `${Date.now()}::${crypto.randomUUID()}`,
+					},
+				}
+			)
+				.then(r => r.json())
+				.then(d => {
+					sendResponse({success: true, examQuestions: d.items});
 				})
 				.catch(e => sendResponse({success: false, error: e.message}));
 			return true;

@@ -198,6 +198,19 @@ function updateAnswers(seneca) {
 	}
 }
 
+function updateMarkSchemes(questions) {
+	result.innerHTML = '';
+
+	// const markSchemes = [];
+	for (let question of questions) {
+		const row = result.appendChild(document.createElement('tr'));
+		const markScheme = question.markScheme
+			.replace(/\*\*(.+?)\*\*/gm, (_, content) => `<strong>${content}</strong>`)
+			.replace(/<(\/?)mark>/gm, (_, slash) => `<${slash}em>`);
+		row.innerHTML = `<h3>${question.questionText}</h3><p>${markScheme}</p>`;
+	}
+}
+
 function extractKeys() {
 	return new Promise((resolve, reject) => {
 		try {
@@ -284,6 +297,18 @@ async function getAssignment(assignmentId) {
 			else console.error('Error getting assignments: ' + e.message);
 		})
 		.catch(e => console.error('Error getting assignments: ' + e.message));
+}
+
+async function getExamQuestions(courseId, sectionId = null) {
+	if (keys.accessToken === undefined) await getAccessToken();
+
+	return await brow.runtime
+		.sendMessage({type: 'examQuestions', courseId, sectionId, accessToken: keys.accessToken})
+		.then(r => {
+			if (r.success) return r.examQuestions;
+			else console.error('Error getting exam questions: ' + e.message);
+		})
+		.catch(e => console.error('Error getting exam questions: ' + e.message));
 }
 
 function generateTimes(min, max, count) {
@@ -437,14 +462,20 @@ const result = document.getElementById('result');
 document.getElementById('refresh').addEventListener('click', async () => {
 	const url = window.location.href.split('/');
 
-	const signedUrl = signedUrls[url[7]] || (await getSignedUrl(url[5], url[7]));
-	fetch(signedUrl)
-		.then(r => r.json())
-		.then(d => {
-			signedUrls[d.id] = signedUrl;
-			updateAnswers(d);
-		})
-		.catch(e => console.error('Error getting signed URL: ' + e.message));
+	if (url[6] === 'exam-questions') {
+		getExamQuestions(url[5])
+			.then(d => updateMarkSchemes(d))
+			.catch(e => console.error('Error getting exam questions: ' + e.message));
+	} else {
+		const signedUrl = signedUrls[url[7]] || (await getSignedUrl(url[5], url[7]));
+		fetch(signedUrl)
+			.then(r => r.json())
+			.then(d => {
+				signedUrls[d.id] = signedUrl;
+				updateAnswers(d);
+			})
+			.catch(e => console.error('Error getting signed URL: ' + e.message));
+	}
 });
 
 // Complete
@@ -528,11 +559,19 @@ document.getElementById('close').addEventListener('click', () => {
 });
 
 brow.runtime.onMessage.addListener(message => {
-	fetch(message.url)
-		.then(r => r.json())
-		.then(d => {
-			signedUrls[d.id] = message.url;
-			updateAnswers(d);
-		})
-		.catch(e => console.error(e));
+	const url = window.location.href.split('/');
+
+	if (url[6] === 'exam-questions') {
+		getExamQuestions(url[5], message.url.split(/[\/\?]/)[7])
+			.then(d => updateMarkSchemes(d))
+			.catch(e => console.error(e));
+	} else {
+		fetch(message.url)
+			.then(r => r.json())
+			.then(d => {
+				signedUrls[d.id] = message.url;
+				updateAnswers(d);
+			})
+			.catch(e => console.error(e));
+	}
 });
