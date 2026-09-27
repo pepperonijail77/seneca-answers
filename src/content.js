@@ -206,7 +206,7 @@ function updateMarkSchemes(questions) {
 		const row = result.appendChild(document.createElement('tr'));
 		const markScheme = question.markScheme
 			.replace(/\*\*(.+?)\*\*/gm, (_, content) => `<strong>${content}</strong>`)
-			.replace(/<(\/?)mark>/gm, (_, slash) => `<${slash}em>`);
+			.replace(/<?(\/?)[Mm]ark>/gm, (_, slash) => `<${slash}em>`);
 		row.innerHTML = `<h3>${question.questionText}</h3><p>${markScheme}</p>`;
 	}
 }
