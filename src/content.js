@@ -558,6 +558,14 @@ document.getElementById('close').addEventListener('click', () => {
 	document.getElementById('overlay').hidden = true;
 });
 
+document.addEventListener(
+	'paste',
+	e => {
+		e.stopImmediatePropagation();
+	},
+	true
+);
+
 brow.runtime.onMessage.addListener(message => {
 	const url = window.location.href.split('/');
 
