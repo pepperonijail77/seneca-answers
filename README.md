@@ -1,11 +1,12 @@
 # ![Icon](src/icons/icon-192.png)<br>Seneca Answers
 
-Seneca Answers is an extension for Firefox and Chrome to get the answers to SenecaLearning lessons.
+Seneca Answers is a browser extension for Firefox and Chromium to get the answers to SenecaLearning lessons.
 
-![GitHub Release](https://img.shields.io/github/v/release/pepperonijail77/seneca-answers)
-![GitHub Downloads](https://img.shields.io/github/downloads/pepperonijail77/seneca-answers/total)
-![Mozilla Add-on Users](https://img.shields.io/amo/users/seneca-answers)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/pepperonijail77/seneca-answers/latest)
+[![GitHub Release](https://img.shields.io/github/v/release/pepperonijail77/seneca-answers)](https://github.com/pepperonijail77/seneca-answers/releases/latest)
+[![GitHub Downloads](https://img.shields.io/github/downloads/pepperonijail77/seneca-answers/total?label=github%20downloads)](https://github.com/pepperonijail77/seneca-answers/releases)
+[![Mozilla Add-on Users](https://img.shields.io/amo/users/seneca-answers?label=firefox%20users)](https://addons.mozilla.org/firefox/addon/seneca-answers?utm_source=github.com&utm_content=users–badge)
+[![Microsoft Edge Add-on Users](https://img.shields.io/badge/dynamic/json?label=edge%20users&query=%24.activeInstallCount&url=https%3A%2F%2Fmicrosoftedge.microsoft.com%2Faddons%2Fgetproductdetailsbycrxid%2Fbokkhhblppjnkonkllaccbneanfenncg)](https://microsoftedge.microsoft.com/addons/detail/seneca-answers/bokkhhblppjnkonkllaccbneanfenncg)
+[![GitHub commits since latest release](https://img.shields.io/github/commits-since/pepperonijail77/seneca-answers/latest)](https://github.com/pepperonijail77/seneca-answers/commits)
 
 ![Screenshot](screenshots/screenshot-480.png)
 
