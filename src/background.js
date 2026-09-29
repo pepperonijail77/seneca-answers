@@ -38,7 +38,13 @@ browser.declarativeNetRequest.updateDynamicRules({
 browser.webRequest.onSendHeaders.addListener(
 	details => {
 		if (details.method === 'GET' && details.requestHeaders.some(h => h.name === 'access-key')) {
-			browser.tabs.sendMessage(details.tabId, {url: details.url}).catch(e => console.error(e));
+			browser.tabs
+				.sendMessage(details.tabId, {
+					type: 'signedUrl',
+					url: details.url,
+					accessToken: details.requestHeaders.find(h => h.name === 'access-key').value,
+				})
+				.catch(e => console.error(e));
 			console.log(details.url);
 		}
 	},
@@ -49,6 +55,14 @@ browser.webRequest.onSendHeaders.addListener(
 		],
 	},
 	['requestHeaders']
+);
+
+browser.webRequest.onSendHeaders.addListener(
+	details =>
+		browser.tabs
+			.sendMessage(details.tabId, {type: 'websocket', url: details.url})
+			.catch(e => console.error(e)),
+	{urls: ['wss://session-ws.app.senecalearning.com/*']}
 );
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {

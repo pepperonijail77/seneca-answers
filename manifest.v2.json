@@ -4,7 +4,12 @@
 	"version": "2.3.0",
 	"developer": {"name": "pepperonijail77", "url": "https://github.com/pepperonijail77"},
 	"description": "Web extension to get the answers to SenecaLearning lessons",
-	"permissions": ["webRequest", "declarativeNetRequest", "*://*.senecalearning.com/*"],
+	"permissions": [
+		"webRequest",
+		"declarativeNetRequest",
+		"*://*.senecalearning.com/*",
+		"wss://*.senecalearning.com/*"
+	],
 	"background": {"scripts": ["background.js"]},
 	"content_scripts": [
 		{"matches": ["https://app.senecalearning.com/*"], "css": ["overlay.css"], "js": ["content.js"]}

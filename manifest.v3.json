@@ -6,7 +6,7 @@
 	"author": "pepperonijail77",
 	"homepage_url": "https://github.com/pepperonijail77/seneca-answers",
 	"permissions": ["webRequest", "declarativeNetRequest"],
-	"host_permissions": ["https://*.senecalearning.com/*"],
+	"host_permissions": ["*://*.senecalearning.com/*", "wss://*.senecalearning.com/*"],
 	"background": {"service_worker": "background.js"},
 	"content_scripts": [
 		{"matches": ["https://app.senecalearning.com/*"], "css": ["overlay.css"], "js": ["content.js"]}

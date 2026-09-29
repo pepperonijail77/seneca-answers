@@ -571,19 +571,27 @@ document.addEventListener(
 );
 
 brow.runtime.onMessage.addListener(message => {
-	const url = window.location.href.split('/');
+	console.log(message);
+	if (message.type === 'signedUrl') {
+		const url = window.location.href.split('/');
+		keys.accessToken = message.accessToken;
 
-	if (url[6] === 'exam-questions') {
-		getExamQuestions(url[5], message.url.split(/[\/\?]/)[7])
-			.then(d => updateMarkSchemes(d))
-			.catch(e => console.error(e));
-	} else {
-		fetch(message.url)
-			.then(r => r.json())
-			.then(d => {
-				signedUrls[d.id] = message.url;
-				updateAnswers(d);
-			})
-			.catch(e => console.error(e));
+		if (url[6] === 'exam-questions') {
+			getExamQuestions(url[5], message.url.split(/[\/\?]/)[7])
+				.then(d => updateMarkSchemes(d))
+				.catch(e => console.error(e));
+		} else {
+			fetch(message.url)
+				.then(r => r.json())
+				.then(d => {
+					signedUrls[d.id] = message.url;
+					updateAnswers(d);
+				})
+				.catch(e => console.error(e));
+		}
+	} else if (message.type === 'websocket') {
+		console.log(message.url);
+		keys.accessToken = /access-key=(.+?)(&|$)/.exec(message.url);
+		keys.sessionId = /sessionId=(.+?)(&|$)/.exec(message.url);
 	}
 });
