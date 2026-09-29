@@ -448,7 +448,7 @@ const overlay = document.body.appendChild(document.createElement('div'));
 overlay.id = 'overlay';
 overlay.innerHTML = `<div id="overlay-content">
 	<button id="complete">Complete</button>
-	<button id="refresh">Refresh</button>
+	<button id="update">Update</button>
 	<button id="move">Move</button>
 	<button id="close">X</button>
 	<div>
@@ -459,7 +459,9 @@ overlay.innerHTML = `<div id="overlay-content">
 const result = document.getElementById('result');
 
 // Refresh
-document.getElementById('refresh').addEventListener('click', async () => {
+document.getElementById('update').addEventListener('click', async function () {
+	this.innerText = 'Updating…';
+
 	const url = window.location.href.split('/');
 
 	if (url[6] === 'exam-questions') {
@@ -476,11 +478,13 @@ document.getElementById('refresh').addEventListener('click', async () => {
 			})
 			.catch(e => console.error('Error getting signed URL: ' + e.message));
 	}
+
+	this.innerText = 'Update';
 });
 
 // Complete
 document.getElementById('complete').addEventListener('click', async function () {
-	this.innerText = 'Completing...';
+	this.innerText = 'Completing…';
 
 	const url = window.location.href.split('/');
 
