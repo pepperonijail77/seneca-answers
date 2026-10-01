@@ -65,7 +65,7 @@ browser.webRequest.onSendHeaders.addListener(
 	{urls: ['wss://session-ws.app.senecalearning.com/*']}
 );
 
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((message, _, sendResponse) => {
 	switch (message.type) {
 		case 'accessToken': {
 			fetch(`https://securetoken.googleapis.com/v1/token?key=${message.apiKey}`, {
@@ -74,19 +74,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			})
 				.then(r => r.json())
 				.then(d => sendResponse({success: true, accessToken: d.access_token}))
-				.catch(e => sendResponse({success: false, error: e.message}));
-			return true;
-		}
-		case 'userId': {
-			fetch('https://user-info.app.senecalearning.com/api/user-info/me', {
-				headers: {
-					'access-key': message.accessToken,
-					correlationId: `${Date.now()}::${crypto.randomUUID()}`,
-					// Origin: 'https://app.senecalearning.com',
-				},
-			})
-				.then(r => r.json())
-				.then(d => sendResponse({success: true, userId: d.userId}))
 				.catch(e => sendResponse({success: false, error: e.message}));
 			return true;
 		}
@@ -156,7 +143,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				},
 				body: JSON.stringify(message.body),
 			})
-				.then(r => sendResponse({success: true}))
+				.then(() => sendResponse({success: true}))
 				.catch(e => {
 					if (e.status === 401) sendResponse({success: false, error: 401});
 					else sendResponse({success: false, error: e.message});

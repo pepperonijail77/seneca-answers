@@ -214,7 +214,6 @@ function updateMarkSchemes(questions) {
 function extractKeys() {
 	return new Promise((resolve, reject) => {
 		try {
-			let keys;
 			const req = indexedDB.open('firebaseLocalStorageDb', 1);
 
 			req.onerror = event => {
@@ -238,10 +237,12 @@ function extractKeys() {
 				};
 
 				query.onsuccess = () => {
-					resolve({
-						apiKey: query.result[0].value.apiKey,
-						refreshToken: query.result[0].value.stsTokenManager.refreshToken,
-					});
+					const result = query.result[0].value;
+					keys.userId = result.uid;
+					keys.refreshToken = result.stsTokenManager.refreshToken;
+					keys.accessToken = result.stsTokenManager.accessToken;
+					keys.apiKey = result.apiKey;
+					resolve();
 				};
 			};
 		} catch (error) {
@@ -251,8 +252,7 @@ function extractKeys() {
 }
 
 async function getAccessToken() {
-	if (keys.apiKey === undefined || keys.refreshToken === undefined)
-		({apiKey: keys.apiKey, refreshToken: keys.refreshToken} = await extractKeys());
+	if (!keys.apiKey || !keys.refreshToken) await extractKeys();
 
 	await brow.runtime
 		.sendMessage({type: 'accessToken', apiKey: keys.apiKey, refreshToken: keys.refreshToken})
@@ -263,20 +263,8 @@ async function getAccessToken() {
 		.catch(e => console.error('Error getting access token: ' + e.message));
 }
 
-async function getUserId() {
-	if (keys.accessToken === undefined) await getAccessToken();
-
-	await brow.runtime
-		.sendMessage({type: 'userId', accessToken: keys.accessToken})
-		.then(r => {
-			if (r.success) keys.userId = r.userId;
-			else console.error('Error getting user ID: ' + r.error);
-		})
-		.catch(e => console.error('Error getting user ID: ' + e.message));
-}
-
 async function getSignedUrl(courseId, sectionId) {
-	if (keys.accessToken === undefined) await getAccessToken();
+	if (!keys.accessToken) await extractKeys();
 
 	return await brow.runtime
 		.sendMessage({type: 'signedUrl', courseId, sectionId, accessToken: keys.accessToken})
@@ -288,7 +276,7 @@ async function getSignedUrl(courseId, sectionId) {
 }
 
 async function getAssignment(assignmentId) {
-	if (keys.accessToken === undefined) await getAccessToken();
+	if (!keys.accessToken) await extractKeys();
 
 	return await brow.runtime
 		.sendMessage({type: 'assignment', assignmentId, accessToken: keys.accessToken})
@@ -300,7 +288,7 @@ async function getAssignment(assignmentId) {
 }
 
 async function getExamQuestions(courseId, sectionId = null) {
-	if (keys.accessToken === undefined) await getAccessToken();
+	if (!keys.accessToken) await extractKeys();
 
 	return await brow.runtime
 		.sendMessage({type: 'examQuestions', courseId, sectionId, accessToken: keys.accessToken})
@@ -325,7 +313,7 @@ function generateTimes(min, max, count) {
 }
 
 async function completeContent(courseId, sectionId, content, medianTime = null) {
-	if (keys.userId === undefined) await getUserId();
+	if (!keys.accessToken || !keys.userId) await extractKeys();
 
 	const sessionId = crypto.randomUUID();
 	const contentModules = content.contentModules || [];
@@ -571,7 +559,6 @@ document.addEventListener(
 );
 
 brow.runtime.onMessage.addListener(message => {
-	console.log(message);
 	if (message.type === 'signedUrl') {
 		const url = window.location.href.split('/');
 		keys.accessToken = message.accessToken;
@@ -590,8 +577,7 @@ brow.runtime.onMessage.addListener(message => {
 				.catch(e => console.error(e));
 		}
 	} else if (message.type === 'websocket') {
-		console.log(message.url);
-		keys.accessToken = /access-key=(.+?)(&|$)/.exec(message.url);
-		keys.sessionId = /sessionId=(.+?)(&|$)/.exec(message.url);
+		keys.accessToken = /access-key=(.+?)(&|$)/.exec(message.url)[1];
+		keys.sessionId = /sessionId=(.+?)(&|$)/.exec(message.url)[1];
 	}
 });
