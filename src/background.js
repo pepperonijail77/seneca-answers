@@ -139,7 +139,7 @@ browser.runtime.onMessage.addListener((message, _, sendResponse) => {
 					correlationId: `${Date.now()}::${crypto.randomUUID()}`,
 					// Origin: 'https://app.senecalearning.com',
 					// Referer: 'https://app.senecalearning.com/',
-					'user-region': 'GB',
+					'user-region': message.countryCode,
 				},
 				body: JSON.stringify(message.body),
 			})

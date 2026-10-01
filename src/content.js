@@ -242,6 +242,8 @@ function extractKeys() {
 					keys.refreshToken = result.stsTokenManager.refreshToken;
 					keys.accessToken = result.stsTokenManager.accessToken;
 					keys.apiKey = result.apiKey;
+					keys.countryCode = JSON.parse(localStorage.getItem('seneca.geoRegion')).countryCode;
+
 					resolve();
 				};
 			};
@@ -313,7 +315,7 @@ function generateTimes(min, max, count) {
 }
 
 async function completeContent(courseId, sectionId, content, medianTime = null) {
-	if (!keys.accessToken || !keys.userId) await extractKeys();
+	if (!keys.accessToken || !keys.userId || !keys.countryCode) await extractKeys();
 
 	const sessionId = crypto.randomUUID();
 	const contentModules = content.contentModules || [];
@@ -402,6 +404,7 @@ async function completeContent(courseId, sectionId, content, medianTime = null) 
 		type: 'completeContent',
 		body,
 		accessToken: keys.accessToken,
+		countryCode: keys.countryCode,
 	});
 	if (!response.success) {
 		await getAccessToken();
